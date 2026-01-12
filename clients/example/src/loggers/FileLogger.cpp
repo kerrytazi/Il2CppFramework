@@ -55,11 +55,11 @@ private:
 
 	Level min_level_ = Logger::Level::Debug;
 
-	common_modules::FileLogger debug_;
-	common_modules::FileLogger info_;
-	common_modules::FileLogger warn_;
-	common_modules::FileLogger error_;
-	common_modules::FileLogger full_;
+	common_loggers::FileLogger debug_;
+	common_loggers::FileLogger info_;
+	common_loggers::FileLogger warn_;
+	common_loggers::FileLogger error_;
+	common_loggers::FileLogger full_;
 };
 
 static RegisterLoggerStatic<FileLogger> registered;

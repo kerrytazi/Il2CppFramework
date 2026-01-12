@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <memory>
 
-namespace common_modules
+namespace common_loggers
 {
 
 class FileLogger
@@ -20,10 +20,11 @@ public:
 	struct LoggerFlags
 	{
 		bool append = false;
-		bool flush_each_line = true;
+		bool flush_each_line = false;
 		size_t buffer_size = 1 * 1024 * 1024;
 
 		static LoggerFlags Default() { return {}; }
+		static LoggerFlags WithFlushEachLine() { return { .flush_each_line = true }; }
 	};
 
 	FileLogger(std::string filename, const LoggerFlags& logger_flags = LoggerFlags::Default())
@@ -61,4 +62,4 @@ private:
 	LoggerFlags flags_;
 };
 
-} // namespace common_modules
+} // namespace common_loggers

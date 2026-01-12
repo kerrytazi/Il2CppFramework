@@ -10,8 +10,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl.exe",
         "CMAKE_CXX_COMPILER": "cl.exe",
-        //"CMAKE_VERBOSE_MAKEFILE": "ON",
-        "UC_LOADER": "DLL_INJECTOR"
+        //"CMAKE_VERBOSE_MAKEFILE": "ON"
       },
       "condition": {
         "type": "equals",
@@ -26,10 +25,7 @@
     {
       "name": "client-base",
       "hidden": true,
-      "inherits": "windows-base",
-      "cacheVariables": {
-        "UC_ENABLE_IMGUI": "ON"
-      }
+      "inherits": "windows-base"
     },
     {
       "name": "client-debug",

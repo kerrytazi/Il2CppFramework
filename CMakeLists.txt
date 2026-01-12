@@ -5,8 +5,11 @@ include("cmake/config_flags.cmake")
 include("cmake/add_imgui.cmake")
 include("cmake/add_autogen.cmake")
 
-option(UC_ENABLE_IMGUI "Enable ImGui" OFF)
-option(UC_LOADER "Loader type" "DLL_INJECTOR")
+option(UC_ENABLE_IMGUI "Enable ImGui" ON)
+message(STATUS "UC_ENABLE_IMGUI ${UC_ENABLE_IMGUI}")
+
+set(UC_LOADER "DLL_INJECTOR" CACHE STRING "Loader type")
+message(STATUS "UC_LOADER ${UC_LOADER}")
 
 #print_all_flags()
 reset_all_flags()
