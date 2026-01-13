@@ -1,4 +1,4 @@
-# Il2CppFramework
+# Il2CppModFramework
 ## Framework for Unity games built with il2cpp.
 
 # Contents
@@ -9,7 +9,7 @@
     - [CMake](#cmake)
       - [Configure](#configure)
       - [Compilation](#compilation)
-    - [Visual Studio's ìOpen Folderî development](#visual-studios-open-folder-development)
+    - [Visual Studio's ‚ÄúOpen Folder‚Äù development](#visual-studios-open-folder-development)
   - [*(Optional)* Remove unnecessary folders from libs](#optional-remove-unnecessary-folders-from-libs)
 - [CMake settings](#cmake-settings)
   - [Example](#example)
@@ -92,7 +92,7 @@ git submodule update --init --filter=blob:none
 
 Check out [CMake settings](#cmake-settings) for more info.
 
-### Visual Studio's ìOpen Folderî development
+### Visual Studio's ‚ÄúOpen Folder‚Äù development
 - Open a local folder.
 - Select `example_client` target and compile it.
 
@@ -111,3 +111,4 @@ You can pass additional options to cmake during configuration.
 |-|-|-|
 |`UC_ENABLE_IMGUI`|Enable ImGui|`[ON]/OFF`|
 |`UC_LOADER`|Loader type|`[DLL_INJECTOR]/MANUAL_MAPPER`|
+
