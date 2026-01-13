@@ -38,10 +38,7 @@ void MyIl2CppData::Init()
 	init_func(il2cpp_type_get_name);
 	init_func(il2cpp_free);
 	init_func(il2cpp_string_new);
-	init_func(il2cpp_class_get_methods);
-	init_func(il2cpp_class_get_fields);
-	init_func(il2cpp_class_get_properties);
-	init_func(il2cpp_class_get_events);
+	init_func(il2cpp_init);
 	#undef init_func
 
 	cached_type_names.reserve(16 * 1024);
