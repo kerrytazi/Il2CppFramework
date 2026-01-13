@@ -16,20 +16,20 @@ public:
 	// Called once module unload.
 	virtual void Unload();
 
-	// Called each frame *before* any other MonoBehaviour Update.
+	// Called each frame *before* any other MonoBehaviour's Update.
 	virtual void PreUpdate();
 
 	// Called each frame.
 	virtual void Update();
 
-	// Called each frame *after* any other MonoBehaviour Update.
+	// Called each frame *after* any other MonoBehaviour's Update.
 	// NOTE: You can't use UnityEngine::Input::GetKey or similar input related functions in PostUpdate.
 	virtual void PostUpdate();
 
-	// Called when framework wants to save user settings *(usually before Unload).
+	// Called when the framework wants to save user settings *(usually before Unload).
 	virtual void SaveConfig(nlohmann::json& doc);
 
-	// Called when framework wants to load user settings (usually after Load).
+	// Called when the framework wants to load user settings (usually after Load).
 	virtual void LoadConfig(const nlohmann::json& doc);
 
 #ifdef UC_ENABLE_IMGUI

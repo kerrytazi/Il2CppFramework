@@ -87,7 +87,7 @@ void ModuleManager::Unload()
 	Log::Debug("ModuleManager::Unload");
 
 	// Unload in reverse order to maintain priority.
-	// First load -> last unload.
+	// The first load is the last unload.
 	for (const auto& module : std::views::reverse(modules_))
 		module->Unload();
 }

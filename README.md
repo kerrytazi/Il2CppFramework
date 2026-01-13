@@ -1,5 +1,5 @@
 # Il2CppModFramework
-## Framework for Unity games built with il2cpp.
+## A framework for creating mods for Unity games built with il2cpp.
 
 # Contents
 - [How to make my own mod](#how-to-make-my-own-mod)
@@ -16,42 +16,42 @@
   - [Full list of options](#full-list-of-options)
 
 # How to make my own mod
-Complete steps in [Developing](#developing) section.
+Follow the steps in the [Developing](#developing) section.
 
-Copy `clients/example` to `clients/my-mod`.
+Copy the `clients/example` to `clients/my-mod`.
 
-`cd clients/my-mod`
+Then, navigate to it: `cd clients/my-mod`
 
 *(Optional)* Init version control: `git init`
 
-Edit `CMakeLists.txt`:
+Edit the `CMakeLists.txt`:
 - `project("my_mod")`
 - `set(UC_UNITY_VERSION 2021.3.56f2)`
 - `config_client(my_mod)`
 
-Edit `src/dllmain.cpp`:
+Edit the `src/dllmain.cpp`:
 - `GetConfigPath` - relative path *(from exe)* to mod settings.
 - `GetUnityGameWindow` - expected name of game window.
 - `GetImGuiIniFilename` - relative path *(from exe)* to imgui settings.
 - `GetImGuiLogFilename` - relative path *(from exe)* to imgui logs.
 
-You can remove these functions. Framework will fallback to default settings.
+You can remove these functions. The framework will fallback to default settings.
 
 In `modules` folder *(or anywhere else inside `clients/my-mod` folder)* you can implement modules of your mod.
 
-Each Module must be inherited from `Module`. And should be registered using `RegisterModuleStatic` for proper working.
+Each Module must inherit from `Module` class and should be registered using `RegisterModuleStatic` to work properly.
 
-**Note**: You can set loading order priority using `RegisterModuleStatic` second template argument.
-Modules will `Unload` in reverse order. First to `Load` -> last to `Unload`.
+**Note**: You can set the loading order priority using the second template argument of `RegisterModuleStatic`.
+Modules will `Unload` in reverse order. The first to `Load` is the last to `Unload`.
 
 Module can override any of:
 - `virtual void Load()` - Called once module load.
 - `virtual void Unload()` - Called once module unload.
-- `virtual void PreUpdate()` - Called each frame *before* any other `MonoBehaviour` `Update`.
+- `virtual void PreUpdate()` - Called each frame *before* any other `MonoBehaviour`'s `Update`.
 - `virtual void Update()` - Called each frame.
-- `virtual void PostUpdate()` - Called each frame *after* any other `MonoBehaviour` `Update`.
-- `virtual void SaveConfig(nlohmann::json& doc)` - Called when framework wants to save user settings *(usually before `Unload`)*.
-- `virtual void LoadConfig(const nlohmann::json& doc)` - Called when framework wants to load user settings *(usually after `Load`)*.
+- `virtual void PostUpdate()` - Called each frame *after* any other `MonoBehaviour`'s `Update`.
+- `virtual void SaveConfig(nlohmann::json& doc)` - Called when the framework wants to save user settings *(usually before `Unload`)*.
+- `virtual void LoadConfig(const nlohmann::json& doc)` - Called when the framework wants to load user settings *(usually after `Load`)*.
 - `virtual bool IsForceImGui()` - Return true if you want to render ImGui even if main menu is closed.
 - `virtual void OnImGuiMenu()` - Called each frame when main menu visible. You should not create any new ImGui windows here.
 - `virtual void OnPostImGuiMenu()` - Called each frame. You can create other ImGui windows here. Or render custom *onscreen* primitives.
@@ -60,26 +60,26 @@ Module can override any of:
 
 **NOTE**: You can't use `UnityEngine::Input::GetKey` or similar input related functions in `PostUpdate`.
 
-In `loggers` folder *(or anywhere else inside `clients/my-mod` folder)* you can implement custom loggers.
-They are called each time you call any function from `Log` namespace.
+In the `loggers` folder *(or anywhere else inside `clients/my-mod` folder)* you can implement custom loggers.
+These are called each time you call any function from the `Log` namespace.
 
 Each Logger must be inherited from `Logger`. And should be registered using `RegisterLoggerStatic` for proper working.
 
 **NOTE**: You can set log order priority using `RegisterLoggerStatic` second template argument.
 
 Logger can override any of:
-- `virtual void AddLine(Level level, Type type, std::initializer_list<cs::ColoredString> line)` - Called each time you call any function from `Log` namespace.
-It's up to you to filter messages by `level` and `type`.
+- `virtual void AddLine(Level level, Type type, std::initializer_list<cs::ColoredString> line)` - Called each time you call any function from the `Log` namespace.
+It's up to you to filter messages by their `level` and `type`.
 
 # Developing
 
 ## Clone repo and submodules
 ```sh
 git clone https://github.com/kerrytazi/Il2CppModFramework.git
-cd Il2CppFramework
+cd Il2CppModFramework
 git submodule update --init --filter=blob:none
 ```
-`--filter=blob:none` because we don't need whole history for libraries. Which apparently downloads and uses ~500mb of extra storage.
+`--filter=blob:none` is used because we don't need whole history for libraries, which would otherwise download and use ~500MB of extra storage.
 
 ## Build systems
 ### CMake
@@ -91,15 +91,15 @@ git submodule update --init --filter=blob:none
 - `cmake --build build --target example_client --config Release`
 - `cmake --build build --target example_client --config RelWithDebInfo`
 
-Check out [CMake settings](#cmake-settings) for more info.
+See [CMake settings](#cmake-settings) for more information.
 
 ### Visual Studio's “Open Folder” development
 - Open a local folder.
-- Select `example_client` target and compile it.
+- Select the `example_client` target and compile it.
 
 ## *(Optional)* Remove unnecessary folders from libs
-- `libs/imgui/examples` because of [this bug](https://developercommunity.visualstudio.com/t/Visual-Studio-scans-for-sln-files-when/11026224).
-- `libs/json/tools/` because Visual Studio searches for invalid `.natvis` files inside.
+- `libs/imgui/examples` due to [this bug](https://developercommunity.visualstudio.com/t/Visual-Studio-scans-for-sln-files-when/11026224).
+- `libs/json/tools/` because Visual Studio searches for invalid `.natvis` files inside it.
 
 # CMake settings
 You can pass additional options to cmake during configuration.

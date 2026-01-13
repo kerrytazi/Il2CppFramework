@@ -36,8 +36,8 @@ public:
 
 	virtual ~Logger();
 
-	// Called each time you call any function from Log namespace.
-	// It's up to you to filter messages by level and type.
+	// Called each time you call any function from the Log namespace.
+	// It's up to you to filter messages by their level and type.
 	virtual void AddLine(Level level, Type type, std::initializer_list<cs::ColoredString> line);
 
 	std::string GetSystemTimeStr();
