@@ -74,7 +74,7 @@ It's up to you to filter messages by `level` and `type`.
 
 ## Clone repo and submodules
 ```sh
-git clone https://github.com/kerrytazi/Il2CppFramework.git
+git clone https://github.com/kerrytazi/Il2CppModFramework.git
 cd Il2CppFramework
 git submodule update --init --filter=blob:none
 ```
@@ -111,4 +111,5 @@ You can pass additional options to cmake during configuration.
 |-|-|-|
 |`UC_ENABLE_IMGUI`|Enable ImGui|`[ON]/OFF`|
 |`UC_LOADER`|Loader type|`[DLL_INJECTOR]/MANUAL_MAPPER`|
+
 
