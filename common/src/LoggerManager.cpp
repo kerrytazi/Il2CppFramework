@@ -47,6 +47,8 @@ LoggerManager::~LoggerManager()
 
 void LoggerManager::LogLine(Logger::Level level, Logger::Type type, std::initializer_list<cs::ColoredString> line)
 {
+	std::unique_lock lock(mtx_);
+
 	for (const auto& logger : loggers_)
 		logger->AddLine(level, type, line);
 }

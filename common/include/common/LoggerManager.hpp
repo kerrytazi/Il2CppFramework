@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <memory>
+#include <mutex>
 #include <functional>
 
 void RegisterLogger(std::function<std::shared_ptr<Logger>()> create_logger, int priority = 50);
@@ -32,6 +33,7 @@ public:
 private:
 
 	std::vector<std::shared_ptr<Logger>> loggers_;
+	std::mutex mtx_;
 };
 
 inline LoggerManager* g_logger_manager = nullptr;

@@ -26,6 +26,15 @@ public:
 
 private:
 
+	void TestLog()
+	{
+		Log::Debug(Logger::Type::System, "Hello ", 3, " world ", cs::Default(false), " ", true);
+		Log::Info(u"Hello ", 3, u" world ", cs::Default(false), " ", true);
+		Log::Warn((const void*)"Hello", " ", (void*)"world");
+		Log::Error(Log::Pad(123), " ", Log::Hex(123), " ", Log::Pad(Log::Hex(123)));
+		Log::Error(su::u8((void*)"hello"));
+	}
+
 	void TestStackTracer()
 	{
 		auto traces_str = StackTracer::GetStackTrace();

@@ -17,8 +17,6 @@ public:
 		Info,
 		Warning,
 		Error,
-
-		Default = Info,
 	};
 
 	friend auto operator<=>(Level lhs, Level rhs)

@@ -24,7 +24,7 @@ extern "C" HWND GetUnityGameWindow()
 // If you want to disable imgui saving then return nullptr.
 extern "C" const char* GetImGuiIniFilename()
 {
-	return "config/imgui.ini";
+	return "client/imgui.ini";
 }
 
 // Optional. You can remove this function.

@@ -16,7 +16,7 @@
 extern "C" const char* GetImGuiIniFilename();
 extern "C" const char* DefaultGetImGuiIniFilename()
 {
-	return "config/imgui.ini";
+	return "client/imgui.ini";
 }
 
 #pragma comment(linker, "/alternatename:GetImGuiLogFilename=DefaultGetImGuiLogFilename")
