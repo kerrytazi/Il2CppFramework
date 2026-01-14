@@ -234,7 +234,7 @@ static bool LoadD3D11()
 
 	g_hwnd = GetUnityGameWindow();
 
-	Log::Debug("g_hwnd: " + std::format("{:#016x}", (uint64_t)g_hwnd));
+	Log::Debug("g_hwnd: ",g_hwnd);
 
 	if (!g_hwnd)
 	{
@@ -450,7 +450,7 @@ bool ImGuiHook::Load()
 			break;
 #endif // _WIN32
 		default:
-			Log::Error("ImGuiHook::Load(): ImGui is not implemented for: " + su::u8((int)type));
+			Log::Error("ImGuiHook::Load(): ImGui is not implemented for: ", (int)type);
 			return false;
 	}
 
@@ -469,7 +469,7 @@ bool ImGuiHook::Unload()
 			break;
 #endif // _WIN32
 		default:
-			Log::Error("ImGuiHook::Unload(): ImGui is not implemented for: " + su::u8((int)type));
+			Log::Error("ImGuiHook::Unload(): ImGui is not implemented for: ", (int)type);
 			return false;
 	}
 

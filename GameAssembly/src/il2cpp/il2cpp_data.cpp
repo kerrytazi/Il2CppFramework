@@ -20,8 +20,8 @@ void MyIl2CppData::Init()
 	if (!GameAssembly)
 		throw std::runtime_error("Can't load GameAssembly.dll");
 
-	Log::Debug("MyIl2CppData::Init GameAssembly: " + std::format("{:#016x}", (intptr_t)GameAssembly));
-	Log::Debug("MyIl2CppData::Init UnityPlayer: " + std::format("{:#016x}", (intptr_t)UnityPlayer));
+	Log::Debug("MyIl2CppData::Init GameAssembly: ", GameAssembly);
+	Log::Debug("MyIl2CppData::Init UnityPlayer: ", UnityPlayer);
 
 	#define init_func(_name) \
 		do \

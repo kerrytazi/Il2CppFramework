@@ -55,14 +55,14 @@ private:
 		}
 		catch (const std::exception& ex)
 		{
-			Log::Debug("Exception: " + std::string(ex.what()));
+			Log::Debug("Exception: ", ex.what());
 		}
 		catch (Il2CppExceptionWrapper& ex)
 		{
-			Log::Debug("Exception: " + ex.GetException()->GetMessage()->AsString());
-			Log::Debug("Exception: " + ex.GetException()->GetSource()->AsString());
-			Log::Debug("Exception: " + ex.GetException()->GetStackTrace()->AsString());
-			Log::Debug("Exception: " + std::to_string((intptr_t)ex.GetException()->GetInnerException()));
+			Log::Debug("Exception: ", ex.GetException()->GetMessage()->AsU16StringView());
+			Log::Debug("Exception: ", ex.GetException()->GetSource()->AsU16StringView());
+			Log::Debug("Exception: ", ex.GetException()->GetStackTrace()->AsU16StringView());
+			Log::Debug("Exception: ", ex.GetException()->GetInnerException());
 		}
 		catch (...)
 		{

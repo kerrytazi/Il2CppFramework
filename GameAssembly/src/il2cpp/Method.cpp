@@ -22,7 +22,7 @@ const il2cpp::Method* il2cpp::Method::Find(
 		// FIXME!!!
 		//if (!klass->IsInitialized())
 		//{
-		//	Log::Warn("Method::Find() failed: klass found but not initialized: " + std::string(class_name) + "::" + std::string(method_name) + ". This should never happen. Report to Developer.");
+		//	Log::Warn("Method::Find() failed: klass found but not initialized: ", class_name, "::", method_name, ". This should never happen. Report to Developer.");
 		//	return nullptr;
 		//}
 

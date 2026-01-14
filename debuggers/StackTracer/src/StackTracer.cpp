@@ -34,7 +34,7 @@ struct Initializer
 			}
 			else
 			{
-				Log::Error("SymInitialize failed: " + su::u8(GetLastError()));
+				Log::Error("SymInitialize failed: ", GetLastError());
 				initialized = false;
 			}
 		}
