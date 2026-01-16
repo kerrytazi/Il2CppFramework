@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common/autogen.hpp"
 #include "System/Object.hpp"
 #include "System/primitives.hpp"
 

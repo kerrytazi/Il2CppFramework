@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common/autogen.hpp"
 #include "UnityEngine/Object.hpp"
 
 namespace UnityEngine

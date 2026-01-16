@@ -47,9 +47,13 @@ const il2cpp::Class* il2cpp::Class::Find(std::string_view namespaze, std::string
 {
 	assert(g_il2cpp_data.GameAssembly);
 
-	auto cit = std::ranges::lower_bound(g_il2cpp_data.cached_classes, CachedClassFullName{ namespaze, class_name }, std::less<>{});
+	auto to_find = CachedClassFullName{ namespaze, class_name };
+	auto cit = std::ranges::lower_bound(g_il2cpp_data.cached_classes, to_find, std::less<>{});
 
 	if (cit == g_il2cpp_data.cached_classes.end())
+		return nullptr;
+
+	if (*cit != to_find)
 		return nullptr;
 
 	return cit->klass;

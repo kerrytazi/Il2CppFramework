@@ -4,8 +4,6 @@
 
 #include "common/Log.hpp"
 
-#include <format>
-
 void MyIl2CppData::Init()
 {
 	if (GameAssembly)

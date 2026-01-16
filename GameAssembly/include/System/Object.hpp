@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/NoImplement.hpp"
+#include "common/autogen.hpp"
 
 namespace il2cpp { class Class; }
 

@@ -14,6 +14,8 @@
 
 struct Method
 {
+	std::string_view namespaze;
+	std::string_view klass;
 	std::string_view ret_type;
 	std::string_view name;
 	std::vector<std::string_view> params;
@@ -21,16 +23,9 @@ struct Method
 	bool is_icall;
 };
 
-struct AutoGen
+static std::vector<Method> parse(std::string_view input_file)
 {
-	std::string_view namespaze;
-	std::string_view klass;
-	Method method;
-};
-
-std::vector<AutoGen> parse(std::string_view input_file)
-{
-	std::vector<AutoGen> result;
+	std::vector<Method> result;
 
 	size_t pos = 0;
 	std::string_view current_namespace;
@@ -47,10 +42,33 @@ std::vector<AutoGen> parse(std::string_view input_file)
 			pos++;
 		}
 
-		if (pos >= input_file.size()) break;
+		if (pos >= input_file.size())
+			break;
+
+		// skip single line comment
+		if (pos + 2 <= input_file.size() && input_file.substr(pos, 2) == "//")
+		{
+			pos += 2;
+
+			while (pos < input_file.size() && input_file[pos] != '\n')
+				pos++;
+
+			continue;
+		}
+
+		// skip multi line comment
+		if (pos + 2 <= input_file.size() && input_file.substr(pos, 2) == "/*")
+		{
+			pos += 2;
+
+			while (pos + 2 <= input_file.size() && input_file.substr(pos, 2) == "*/")
+				pos++;
+
+			continue;
+		}
 
 		// Check for namespace
-		if (input_file.substr(pos, 10) == "namespace ")
+		if (pos + 10 <= input_file.size() && input_file.substr(pos, 10) == "namespace ")
 		{
 			pos += 10; // Skip "namespace "
 
@@ -78,11 +96,26 @@ std::vector<AutoGen> parse(std::string_view input_file)
 			continue;
 		}
 
-		// Check for class definition (but only if we're in a namespace)
-		if (in_valid_namespace && input_file.substr(pos, 6) == "class ")
-		{
-			pos += 6; // Skip "class "
+		bool found_class = false;
 
+		// Check for class definition (but only if we're in a namespace)
+		if (in_valid_namespace)
+		{
+			if (pos + 6 <= input_file.size() && input_file.substr(pos, 6) == "class ")
+			{
+				pos += 6;
+				found_class = true;
+			}
+			else
+			if (pos + 7 <= input_file.size() && input_file.substr(pos, 7) == "struct ")
+			{
+				pos += 7;
+				found_class = true;
+			}
+		}
+
+		if (found_class)
+		{
 			// Skip any whitespace after class
 			while (pos < input_file.size() && std::isspace(input_file[pos]))
 			{
@@ -251,9 +284,15 @@ std::vector<AutoGen> parse(std::string_view input_file)
 			if (!current_namespace.empty() && !current_class.empty() &&
 				!ret_type.empty() && !method_name.empty())
 			{
-				Method method = { ret_type, method_name, params, is_static, found_autogen_icall };
-				AutoGen autogen = { current_namespace, current_class, method };
-				result.push_back(autogen);
+				result.emplace_back(
+					current_namespace,
+					current_class,
+					ret_type,
+					method_name,
+					std::move(params),
+					is_static,
+					found_autogen_icall
+				);
 			}
 
 			continue;
@@ -291,7 +330,7 @@ std::vector<AutoGen> parse(std::string_view input_file)
 	return result;
 }
 
-std::string replaceAll(std::string str, const std::string_view& from, const std::string_view& to)
+static std::string replaceAll(std::string str, const std::string_view& from, const std::string_view& to)
 {
 	if (from.empty())
 		return str;
@@ -304,6 +343,34 @@ std::string replaceAll(std::string str, const std::string_view& from, const std:
 	}
 
 	return str;
+}
+
+static std::string replaceArray(std::string type, bool add_array = true)
+{
+	constexpr auto arr_start = std::string_view("il2cpp.Array<");
+	constexpr auto arr_cs = std::string_view("[]");
+
+	if (type.starts_with(arr_start))
+	{
+		type.erase(type.begin(), type.begin() + arr_start.size());
+		type.erase(type.end() - 1);
+
+		if (add_array)
+			type.insert(type.end(), arr_cs.begin(), arr_cs.end());
+
+		type = replaceArray(std::move(type));
+	}
+
+	return type;
+}
+
+static std::string normalize_type(std::string type, bool add_array = true)
+{
+	auto replaced_scope = replaceAll(std::move(type), "::", ".");
+	auto removed_pointers = replaceAll(std::move(replaced_scope), "*", "");
+	auto replaced_array = replaceArray(std::move(removed_pointers), add_array);
+
+	return replaced_array;
 }
 
 int main(int argc, char* argv[])
@@ -339,7 +406,7 @@ int main(int argc, char* argv[])
 		file_content = std::move(buffer).str();
 	}
 
-	std::vector<AutoGen> autogen_methods = parse(file_content);
+	auto methods = parse(file_content);
 
 	std::ofstream output_file(output_path);
 
@@ -351,40 +418,40 @@ int main(int argc, char* argv[])
 
 	output_file << "// Auto generated file - will be overwritten by autogen tool\n";
 
-	if (autogen_methods.empty())
+	if (methods.empty())
 		return 0;
 
 	{
 		std::set<std::string> all_types;
 
-		for (const auto& autogen : autogen_methods)
+		for (const auto& method : methods)
 		{
-			all_types.insert(std::string(autogen.namespaze) + "::" + std::string(autogen.klass));
-			all_types.insert(replaceAll(std::string(autogen.method.ret_type), "*", ""));
+			all_types.insert(replaceAll(std::string(method.namespaze), "::", ".") + "." + std::string(method.klass));
+			all_types.insert(normalize_type(std::string(method.ret_type), false));
 
-			for (const auto& param : autogen.method.params)
-				all_types.insert(replaceAll(std::string(param), "*", ""));
+			for (const auto& param : method.params)
+				all_types.insert(replaceAll(normalize_type(std::string(param), false), "&", ""));
 		}
 
-		all_types.erase("System::Void");
-		all_types.erase("System::Boolean");
-		all_types.erase("System::Char");
-		all_types.erase("System::Byte");
-		all_types.erase("System::SByte");
-		all_types.erase("System::Int16");
-		all_types.erase("System::UInt16");
-		all_types.erase("System::Int32");
-		all_types.erase("System::UInt32");
-		all_types.erase("System::Int64");
-		all_types.erase("System::UInt64");
-		all_types.erase("System::IntPtr");
-		all_types.erase("System::UIntPtr");
-		all_types.erase("System::Single");
-		all_types.erase("System::Double");
+		all_types.erase("System.Void");
+		all_types.erase("System.Boolean");
+		all_types.erase("System.Char");
+		all_types.erase("System.Byte");
+		all_types.erase("System.SByte");
+		all_types.erase("System.Int16");
+		all_types.erase("System.UInt16");
+		all_types.erase("System.Int32");
+		all_types.erase("System.UInt32");
+		all_types.erase("System.Int64");
+		all_types.erase("System.UInt64");
+		all_types.erase("System.IntPtr");
+		all_types.erase("System.UIntPtr");
+		all_types.erase("System.Single");
+		all_types.erase("System.Double");
 
 		for (const auto& type : all_types)
 		{
-			std::string type_path = replaceAll(type, "::", "/");
+			std::string type_path = replaceAll(type, ".", "/");
 			output_file << "#include \"" << type_path << ".hpp\"\n";
 		}
 
@@ -395,18 +462,18 @@ int main(int argc, char* argv[])
 	output_file << "#include \"System/primitives.hpp\"\n";
 	output_file << "#include \"il2cpp/MethodFinder.hpp\"\n\n";
 
-	for (const auto& autogen : autogen_methods)
+	for (const auto& method : methods)
 	{
-		output_file << autogen.method.ret_type << " ";
-		output_file << autogen.namespaze << "::";
-		output_file << autogen.klass << "::";
-		output_file << autogen.method.name << "(";
+		output_file << method.ret_type << " ";
+		output_file << method.namespaze << "::";
+		output_file << method.klass << "::";
+		output_file << method.name << "(";
 
-		for (size_t i = 0; i < autogen.method.params.size(); ++i)
+		for (size_t i = 0; i < method.params.size(); ++i)
 		{
-			output_file << autogen.method.params[i] << " a" << i;
+			output_file << method.params[i] << " a" << i;
 
-			if (i < autogen.method.params.size() - 1)
+			if (i < method.params.size() - 1)
 				output_file << ", ";
 		}
 
@@ -416,79 +483,79 @@ int main(int argc, char* argv[])
 
 		output_file << "\tauto func = ";
 		
-		if (autogen.method.is_icall)
+		if (method.is_icall)
 			output_file << "il2cpp::FindICallMethodOnce<";
 		else
 			output_file << "il2cpp::FindMethodOnce<";
 
-		output_file << autogen.method.ret_type << "(";
+		output_file << method.ret_type << "(";
 
-		if (!autogen.method.is_static)
+		if (!method.is_static)
 		{
 			output_file << "decltype(this)";
 
-			if (!autogen.method.params.empty())
+			if (!method.params.empty())
 				output_file << ", ";
 		}
 
-		for (size_t i = 0; i < autogen.method.params.size(); ++i)
+		for (size_t i = 0; i < method.params.size(); ++i)
 		{
-			output_file << autogen.method.params[i];
+			output_file << method.params[i];
 
-			if (i < autogen.method.params.size() - 1)
+			if (i < method.params.size() - 1)
 				output_file << ", ";
 		}
 
-		output_file << ")>([]() { ";
+		output_file << "), decltype([]() { ";
 
-		if (autogen.method.is_icall)
+		if (method.is_icall)
 		{
 			output_file << "return il2cpp::resolve_icall(";
-			output_file << "\"" << autogen.namespaze << "." << autogen.klass << "::" << autogen.method.name << "\"";
+			output_file << "\"" << method.namespaze << "." << method.klass << "::" << method.name << "\"";
 			output_file << ");";
 		}
 		else
 		{
 			output_file << "return il2cpp::Method::Find(";
-			output_file << "\"" << autogen.namespaze << "\", ";
-			output_file << "\"" << autogen.klass << "\", ";
-			output_file << "\"" << autogen.method.name << "\", ";
-			output_file << "\"" << replaceAll(replaceAll(std::string(autogen.method.ret_type), "::", "."), "*", "") << "\", ";
+			output_file << "\"" << replaceAll(std::string(method.namespaze), "::", ".") << "\", ";
+			output_file << "\"" << method.klass << "\", ";
+			output_file << "\"" << method.name << "\", ";
+			output_file << "\"" << normalize_type(std::string(method.ret_type)) << "\", ";
 
 			output_file << "{ ";
-			for (size_t i = 0; i < autogen.method.params.size(); ++i)
+			for (size_t i = 0; i < method.params.size(); ++i)
 			{
-				output_file << "\"" << replaceAll(replaceAll(std::string(autogen.method.params[i]), "::", "."), "*", "") << "\"";
+				output_file << "\"" << normalize_type(std::string(method.params[i])) << "\"";
 
-				if (i < autogen.method.params.size() - 1)
+				if (i < method.params.size() - 1)
 					output_file << ",";
 
 				output_file << " ";
 			}
 			output_file << "}, ";
 
-			output_file << "" << (autogen.method.is_static ? "true" : "false");
+			output_file << "" << (method.is_static ? "true" : "false");
 
 			output_file << ");";
 		}
 
-		output_file << " });\n";
+		output_file << " })>();\n";
 
 		output_file << "\treturn func(";
 
-		if (!autogen.method.is_static)
+		if (!method.is_static)
 		{
 			output_file << "this";
 
-			if (!autogen.method.params.empty())
+			if (!method.params.empty())
 				output_file << ", ";
 		}
 
-		for (size_t i = 0; i < autogen.method.params.size(); ++i)
+		for (size_t i = 0; i < method.params.size(); ++i)
 		{
 			output_file << "a" << i;
 
-			if (i < autogen.method.params.size() - 1)
+			if (i < method.params.size() - 1)
 				output_file << ", ";
 		}
 

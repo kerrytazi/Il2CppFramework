@@ -1,12 +1,12 @@
 #pragma once
 
-#include "common/autogen.hpp"
 #include "System/primitives.hpp"
 #include "UnityEngine/Object.hpp"
 
 #include <ranges>
 
 namespace System { class String; }
+namespace UnityEngine::SceneManagement { struct Scene; }
 
 namespace UnityEngine
 {
@@ -19,6 +19,16 @@ public:
 
 	__autogen System::Int32 GetComponentCount();
 	__autogen UnityEngine::Component* GetComponentAtIndex(System::Int32 index);
+
+	__autogen System::Void SetActive(System::Boolean value);
+	__autogen System::Boolean get_activeSelf();
+
+	// __autogen Transform get_transform();
+
+	__autogen System::Int32 get_layer();
+	__autogen System::Void set_layer(System::Int32 value);
+
+	__autogen UnityEngine::SceneManagement::Scene get_scene();
 
 	__autogen static UnityEngine::GameObject* Find(System::String* name);
 

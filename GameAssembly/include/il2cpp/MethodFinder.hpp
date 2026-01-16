@@ -16,11 +16,11 @@ struct MethodFinderOnce
 	using pointer = typename templates::func<TFunc>::pointer;
 	static inline pointer ptr = nullptr;
 
-	static pointer Find(TFinder finder)
+	static pointer Find()
 	{
 		if (!ptr) [[unlikely]]
 		{
-			auto game_method = finder();
+			auto game_method = TFinder{}();
 			assert(game_method);
 			ptr = game_method->template GetMethodPointer<TFunc>();
 			assert(ptr);
@@ -29,11 +29,11 @@ struct MethodFinderOnce
 		return ptr;
 	}
 
-	static pointer FindICall(TFinder finder)
+	static pointer FindICall()
 	{
 		if (!ptr) [[unlikely]]
 		{
-			ptr = (pointer)finder();
+			ptr = (pointer)TFinder{}();
 			assert(ptr);
 		}
 
@@ -42,15 +42,15 @@ struct MethodFinderOnce
 };
 
 template <typename TFunc, typename TFinder>
-auto FindMethodOnce(TFinder finder)
+auto FindMethodOnce()
 {
-	return MethodFinderOnce<TFunc, TFinder>::Find(finder);
+	return MethodFinderOnce<TFunc, TFinder>::Find();
 }
 
 template <typename TFunc, typename TFinder>
-auto FindICallMethodOnce(TFinder finder)
+auto FindICallMethodOnce()
 {
-	return MethodFinderOnce<TFunc, TFinder>::FindICall(finder);
+	return MethodFinderOnce<TFunc, TFinder>::FindICall();
 }
 
 } // namespace il2cpp
