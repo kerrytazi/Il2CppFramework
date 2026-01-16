@@ -21,7 +21,6 @@ public:
 
 	std::string_view GetName() const { return name; } // null-terminated
 
-	template <typename T = void>
 	auto GetClassesView() const
 	{
 		const auto get_class_by_index = [this](size_t index) {

@@ -429,8 +429,16 @@ int main(int argc, char* argv[])
 			all_types.insert(replaceAll(std::string(method.namespaze), "::", ".") + "." + std::string(method.klass));
 			all_types.insert(normalize_type(std::string(method.ret_type), false));
 
+			if (method.ret_type.find("il2cpp::Array") != -1)
+				all_types.insert("il2cpp.Array");
+
 			for (const auto& param : method.params)
+			{
 				all_types.insert(replaceAll(normalize_type(std::string(param), false), "&", ""));
+
+				if (param.find("il2cpp::Array") != -1)
+					all_types.insert("il2cpp.Array");
+			}
 		}
 
 		all_types.erase("System.Void");

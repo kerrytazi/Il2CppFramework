@@ -19,7 +19,7 @@ public:
 
 	std::string_view GetName() const { return aname.name; } // null-terminated
 
-	template <typename T = void>
+	template <typename _ = void>
 	static auto GetImagesView()
 	{
 		const auto get_image_from_assembly = [](const Assembly* assembly) {

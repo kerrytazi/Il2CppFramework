@@ -5,10 +5,6 @@
 
 #include "UnityEngine/Application.hpp"
 
-#ifdef UC_ENABLE_IMGUI
-#include "imgui.h"
-#endif // UC_ENABLE_IMGUI
-
 struct FPSLimiterConfig
 {
 	bool enable = false;

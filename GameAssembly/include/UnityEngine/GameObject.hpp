@@ -12,6 +12,7 @@ namespace UnityEngine
 {
 
 class Component;
+class Transform;
 
 class GameObject : public UnityEngine::Object
 {
@@ -23,7 +24,7 @@ public:
 	__autogen System::Void SetActive(System::Boolean value);
 	__autogen System::Boolean get_activeSelf();
 
-	// __autogen Transform get_transform();
+	__autogen UnityEngine::Transform* get_transform();
 
 	__autogen System::Int32 get_layer();
 	__autogen System::Void set_layer(System::Int32 value);

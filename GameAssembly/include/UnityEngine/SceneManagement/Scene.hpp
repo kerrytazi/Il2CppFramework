@@ -2,8 +2,10 @@
 
 #include "common/autogen.hpp"
 #include "System/primitives.hpp"
-#include "il2cpp/Array.hpp"
 
+#include <ranges>
+
+namespace il2cpp { template <typename T> class Array; }
 namespace UnityEngine { class GameObject; }
 
 namespace UnityEngine::SceneManagement

@@ -6,7 +6,6 @@
 
 #include "UnityEngine/Input.hpp"
 
-#include "imgui.h"
 extern void ImGui::ShowDemoWindow(bool*);
 
 class ImGuiDemoModule : public Module

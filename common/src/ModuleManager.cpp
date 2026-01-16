@@ -212,6 +212,9 @@ void ModuleManager::OnImGui()
 
 			if (ImGui::BeginMenuBar())
 			{
+				if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_Delete))
+					RequestUnload();
+
 				if (ImGui::BeginMenu("Client"))
 				{
 					if (ImGui::MenuItem("Unload", "Alt+Delete"))
@@ -219,6 +222,12 @@ void ModuleManager::OnImGui()
 
 					ImGui::EndMenu();
 				}
+
+				if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O) && std::filesystem::is_regular_file(GetConfigPath()))
+					LoadConfig();
+
+				if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S))
+					SaveConfig();
 
 				if (ImGui::BeginMenu("Config"))
 				{
