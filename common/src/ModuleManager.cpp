@@ -63,7 +63,10 @@ void ModuleManager::RequestUnload()
 
 	ELoadState check = ELoadState::Loaded;
 	if (!load_state_.compare_exchange_strong(check, ELoadState::DoUnload))
-		throw std::runtime_error("ModuleManager::RequestUnload failed. Invalid state: " + std::to_string((int)check));
+	{
+		if (check != ELoadState::DoUnload)
+			throw std::runtime_error("ModuleManager::RequestUnload failed. Invalid state: " + std::to_string((int)check));
+	}
 }
 
 #ifdef UC_ENABLE_IMGUI
@@ -207,14 +210,14 @@ void ModuleManager::OnImGui()
 
 		if (ImGuiHook::IsClientMenuActive())
 		{
+			if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_Delete, false))
+				RequestUnload();
+
 			ImGui::SetNextWindowSizeConstraints(ImVec2(600, 200), ImVec2(1000, 1000));
 			ImGui::Begin("Client Menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
 			if (ImGui::BeginMenuBar())
 			{
-				if (ImGui::Shortcut(ImGuiMod_Alt | ImGuiKey_Delete))
-					RequestUnload();
-
 				if (ImGui::BeginMenu("Client"))
 				{
 					if (ImGui::MenuItem("Unload", "Alt+Delete"))
