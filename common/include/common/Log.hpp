@@ -32,11 +32,17 @@ struct Pad
 {
 	const T& val;
 	char pad_char = '0';
-	int pad_size = sizeof(uintptr_t) * 2;
+	int pad_size = sizeof(T) * 2;
 };
 
 template <typename T>
 Pad(T) -> Pad<std::remove_cvref_t<T>>;
+
+template <typename T>
+Pad(T, char) -> Pad<std::remove_cvref_t<T>>;
+
+template <typename T>
+Pad(T, char, int) -> Pad<std::remove_cvref_t<T>>;
 
 template <typename T>
 static constexpr bool _is_padded = false;
