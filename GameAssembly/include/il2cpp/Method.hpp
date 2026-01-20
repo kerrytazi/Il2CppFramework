@@ -46,7 +46,6 @@ public:
 	template <typename TFunc>
 	auto GetMethodPointer() const { return reinterpret_cast<typename templates::func<TFunc>::pointer>(_GetMethodPointer()); }
 
-
 	static const Method* Find(
 		std::string_view namespaze,
 		std::string_view class_name,
