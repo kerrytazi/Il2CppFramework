@@ -302,8 +302,15 @@ void ModuleManager::OnPreUpdate()
 	if (ELoadState check = ELoadState::DoLoad; load_state_.compare_exchange_strong(check, ELoadState::Loaded))
 	{
 		Load();
-		LoadConfig();
+
+		if (load_state_ != ELoadState::DoUnload)
+			LoadConfig();
+		else
+			Log::Warn(cs::Yellow("ModuleManager::RequestUnload was called during Load"));
 	}
+
+	if (load_state_ == ELoadState::DoUnload)
+		return;
 
 #ifdef UC_ENABLE_IMGUI
 	if (bool check = true; request_use_imgui_.compare_exchange_strong(check, false))

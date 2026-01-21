@@ -52,3 +52,11 @@ void LoggerManager::LogLine(Logger::Level level, Logger::Type type, std::initial
 	for (const auto& logger : loggers_)
 		logger->AddLine(level, type, line);
 }
+
+void LoggerManager::Flush()
+{
+	std::unique_lock lock(mtx_);
+
+	for (const auto& logger : loggers_)
+		logger->Flush();
+}

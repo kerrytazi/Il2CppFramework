@@ -3,11 +3,13 @@
 #include "StackTracer/StackTracer.hpp"
 
 #include "common/Log.hpp"
-#include "common/StringUtils.hpp"
+
+#include "common/MyWindows.hpp"
 
 #include <sstream>
 #include <optional>
 #include <dbghelp.h>
+#include <mutex>
 
 #pragma comment(lib, "dbghelp.lib")
 
@@ -53,34 +55,39 @@ struct Initializer
 };
 
 static Initializer g_symbols_initializer;
+static std::mutex g_mtx;
 
-
-static std::vector<StackTracer::StackFrame> WalkStack(HANDLE process, HANDLE thread)
+struct StackFrame
 {
-	std::vector<StackTracer::StackFrame> frames;
+	DWORD64 address;
+	std::string name;
+	std::string module;
+	DWORD line_number;
+	std::string file_name;
+};
 
-	STACKFRAME64 stack_frame = {};
-	CONTEXT context = {};
-
-	context.ContextFlags = CONTEXT_FULL;
-	RtlCaptureContext(&context);
+static std::vector<StackFrame> WalkStack(HANDLE process, HANDLE thread, const CONTEXT* context)
+{
+	std::vector<StackFrame> frames;
 
 	// Initialize stack frame based on architecture
 #ifdef _M_IX86
+	STACKFRAME stack_frame{};
 	DWORD machine_type = IMAGE_FILE_MACHINE_I386;
-	stack_frame.AddrPC.Offset = context.Eip;
+	stack_frame.AddrPC.Offset = context->Eip;
 	stack_frame.AddrPC.Mode = AddrModeFlat;
-	stack_frame.AddrFrame.Offset = context.Ebp;
+	stack_frame.AddrFrame.Offset = context->Ebp;
 	stack_frame.AddrFrame.Mode = AddrModeFlat;
-	stack_frame.AddrStack.Offset = context.Esp;
+	stack_frame.AddrStack.Offset = context->Esp;
 	stack_frame.AddrStack.Mode = AddrModeFlat;
 #elif _M_X64
+	STACKFRAME64 stack_frame{};
 	DWORD machine_type = IMAGE_FILE_MACHINE_AMD64;
-	stack_frame.AddrPC.Offset = context.Rip;
+	stack_frame.AddrPC.Offset = context->Rip;
 	stack_frame.AddrPC.Mode = AddrModeFlat;
-	stack_frame.AddrFrame.Offset = context.Rbp;
+	stack_frame.AddrFrame.Offset = context->Rbp;
 	stack_frame.AddrFrame.Mode = AddrModeFlat;
-	stack_frame.AddrStack.Offset = context.Rsp;
+	stack_frame.AddrStack.Offset = context->Rsp;
 	stack_frame.AddrStack.Mode = AddrModeFlat;
 #else
 	#error Unsupported architecture
@@ -93,21 +100,19 @@ static std::vector<StackTracer::StackFrame> WalkStack(HANDLE process, HANDLE thr
 			process,
 			thread,
 			&stack_frame,
-			&context,
+			(void*)context,
 			nullptr,
-			SymFunctionTableAccess64,
-			SymGetModuleBase64,
+			&SymFunctionTableAccess64,
+			&SymGetModuleBase64,
 			nullptr))
 		{
 			break;
 		}
 
 		if (stack_frame.AddrPC.Offset == 0)
-		{
 			break;
-		}
 
-		StackTracer::StackFrame frame{};
+		StackFrame frame{};
 		frame.address = stack_frame.AddrPC.Offset;
 
 		// Try to get symbol name
@@ -150,38 +155,155 @@ static std::vector<StackTracer::StackFrame> WalkStack(HANDLE process, HANDLE thr
 	return frames;
 }
 
-std::string StackTracer::GetStackTrace()
+static void LogFrames(const std::vector<StackFrame>& frames)
 {
-	HANDLE process = GetCurrentProcess();
-	HANDLE thread = GetCurrentThread();
+	Log::Error(cs::Red("Stack Trace ("), cs::Red(frames.size()), cs::Red(" frames):"));
+	for (size_t i = 0; i < frames.size(); ++i)
+	{
+		const auto& frame = frames[i];
+		bool n = !frame.file_name.empty();
+		bool m = !frame.module.empty();
 
+		Log::Error(
+			cs::Green(Log::Pad(i, ' ', 2)), cs::Red(": "), cs::Red(frame.name), cs::Red(" ["), cs::Cyan("0x"), cs::Cyan((void*)frame.address), cs::Red("]"),
+			cs::Red(n ? " at " : ""), cs::Yellow(n ? frame.file_name : ""), cs::Red(n ? ":" : ""), cs::Red(n ? su::u8(frame.line_number) : ""),
+			cs::Red(m ? " (" : ""), cs::Yellow(m ? frame.module : ""), cs::Red(m ? ")" : "")
+		);
+	}
+}
+
+static std::string FormatFrames(const std::vector<StackFrame>& frames)
+{
 	std::stringstream ss;
 
-	if (g_symbols_initializer.InitSymbols(process))
+	ss << "Stack Trace (" << frames.size() << " frames):\n";
+	for (size_t i = 0; i < frames.size(); ++i)
 	{
-		auto frames = WalkStack(process, thread);
+		const auto& frame = frames[i];
+		ss << i << ": " << frame.name
+			<< " [0x" << std::hex << frame.address << std::dec << "]";
 
-		ss << "Stack Trace (" << frames.size() << " frames):\n";
-		for (size_t i = 0; i < frames.size(); ++i)
+		if (!frame.file_name.empty())
 		{
-			const auto& frame = frames[i];
-			ss << i << ": " << frame.name
-				<< " [0x" << std::hex << frame.address << std::dec << "]";
-
-			if (!frame.file_name.empty())
-			{
-				ss << " at " << frame.file_name << ":" << frame.line_number;
-			}
-
-			if (!frame.module.empty())
-			{
-				ss << " (" << frame.module << ")";
-			}
-
-			if (i != frames.size() - 1)
-				ss << "\n";
+			ss << " at " << frame.file_name << ":" << frame.line_number;
 		}
+
+		if (!frame.module.empty())
+		{
+			ss << " (" << frame.module << ")";
+		}
+
+		if (i != frames.size() - 1)
+			ss << "\n";
 	}
 
 	return std::move(ss).str();
+}
+
+std::string StackTracer::GetStackTrace()
+{
+	std::unique_lock lock(g_mtx);
+
+	HANDLE process = GetCurrentProcess();
+	HANDLE thread = GetCurrentThread();
+
+	if (g_symbols_initializer.InitSymbols(process))
+	{
+		CONTEXT context{};
+		context.ContextFlags = CONTEXT_FULL;
+		RtlCaptureContext(&context);
+
+		auto frames = WalkStack(process, thread, &context);
+		return FormatFrames(frames);
+	}
+	else
+	{
+		return "StackTracer::GetStackTrace() failed. Can't InitSymbols";
+	}
+}
+
+std::string StackTracer::GetStackTrace(_EXCEPTION_POINTERS* pointers)
+{
+	std::unique_lock lock(g_mtx);
+
+	if (!pointers)
+		return "StackTracer::GetStackTrace(pointers) failed. pointers == null";
+
+	if (!pointers->ContextRecord)
+		return "StackTracer::GetStackTrace(pointers) failed. pointers->ContextRecord == null";
+
+	HANDLE process = GetCurrentProcess();
+	HANDLE thread = GetCurrentThread();
+
+	if (g_symbols_initializer.InitSymbols(process))
+	{
+		auto frames = WalkStack(process, thread, pointers->ContextRecord);
+		return FormatFrames(frames);
+	}
+	else
+	{
+		return "StackTracer::GetStackTrace(pointers) failed. Can't InitSymbols";
+	}
+}
+
+void StackTracer::LogStackTrace()
+{
+	std::unique_lock lock(g_mtx);
+
+	HANDLE process = GetCurrentProcess();
+	HANDLE thread = GetCurrentThread();
+
+	if (g_symbols_initializer.InitSymbols(process))
+	{
+		CONTEXT context{};
+		context.ContextFlags = CONTEXT_FULL;
+		RtlCaptureContext(&context);
+
+		auto frames = WalkStack(process, thread, &context);
+		LogFrames(frames);
+	}
+	else
+	{
+		Log::Error(cs::Red("StackTracer::LogStackTrace() failed. Can't InitSymbols"));
+	}
+}
+
+int StackTracer::LogStackTrace(_EXCEPTION_POINTERS* pointers)
+{
+	std::unique_lock lock(g_mtx);
+
+	if (!pointers)
+	{
+		Log::Error(cs::Red("StackTracer::LogStackTrace(pointers) failed. pointers == null"));
+		return 0;
+	}
+
+	if (!pointers->ContextRecord)
+	{
+		Log::Error(cs::Red("StackTracer::LogStackTrace(pointers) failed. pointers->ContextRecord == null"));
+		return 0;
+	}
+
+	HANDLE process = GetCurrentProcess();
+	HANDLE thread = GetCurrentThread();
+
+	if (g_symbols_initializer.InitSymbols(process))
+	{
+		auto frames = WalkStack(process, thread, pointers->ContextRecord);
+
+		if (frames.empty())
+		{
+			Log::Error(cs::Red("StackTracer::LogStackTrace(pointers) failed. Zero frames found"));
+			return 0;
+		}
+
+		LogFrames(frames);
+		return (int)frames.size();
+	}
+	else
+	{
+		Log::Error(cs::Red("StackTracer::LogStackTrace(pointers) failed. Can't InitSymbols"));
+	}
+
+	return 0;
 }

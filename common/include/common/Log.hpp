@@ -7,6 +7,7 @@
 namespace Log
 {
 
+void Flush();
 
 void Line(Logger::Level level, Logger::Type type, std::initializer_list<cs::StyledString> _line);
 

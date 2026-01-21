@@ -7,6 +7,8 @@
 
 #include "static_lambda/detour_lambda.hpp"
 
+#include "common/ExceptionGuarded.hpp"
+
 #include <stdexcept>
 #include <ranges>
 
@@ -16,17 +18,31 @@ struct FriendIl2CppOnUpdate
 {
 	static void PatchPlayerLoop(int64_t(*update_func)())
 	{
-		g_player_loop_detour.emplace(update_func, [](auto original) {
+		g_player_loop_detour.emplace(update_func, [](auto original) -> int64_t {
+			auto result = ExceptionGuarded("PatchPlayerLoop", [&]() {
+				if (g_module_manager)
+					g_module_manager->OnPreUpdate();
 
-			if (g_module_manager)
-				g_module_manager->OnPreUpdate();
+				auto result = original();
 
-			auto result = original();
+				if (g_module_manager)
+					g_module_manager->OnPostUpdate();
 
-			if (g_module_manager)
-				g_module_manager->OnPostUpdate();
+				return result;
+			});
 
-			return result;
+			if (result.has_value())
+			{
+				return *result;
+			}
+			else
+			{
+				// Try to gracefully unload client to minimize damage to the game
+				if (g_module_manager)
+					g_module_manager->RequestUnload();
+
+				return 0;
+			}
 		});
 	}
 };

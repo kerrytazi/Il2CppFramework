@@ -13,6 +13,10 @@ void Logger::AddLine(Level level, Type type, std::initializer_list<cs::StyledStr
 {
 }
 
+void Logger::Flush()
+{
+}
+
 constexpr size_t TIME_STR_LEN = 23;
 
 size_t Logger::GetSystemTimeStr(char* out, size_t out_size)

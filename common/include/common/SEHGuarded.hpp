@@ -1,9 +1,11 @@
 #pragma once
 
-#include "common/Log.hpp"
-
+#include <optional>
 #include <string_view>
 #include <type_traits>
+#include <excpt.h>
+
+extern int _FilterSEHException(std::string_view name, unsigned long code, struct _EXCEPTION_POINTERS* pointers);
 
 template <typename TFunc, typename TRet = std::invoke_result_t<TFunc>>
 std::optional<TRet> SEHGuarded(std::string_view name, TFunc&& func)
@@ -12,10 +14,8 @@ std::optional<TRet> SEHGuarded(std::string_view name, TFunc&& func)
 	{
 		return func();
 	}
-	__except (1) // EXCEPTION_EXECUTE_HANDLER
+	__except (_FilterSEHException(name, GetExceptionCode(), GetExceptionInformation()))
 	{
-		// TODO: More info
-		Log::Error(cs::Red(name), cs::Red(" SEH exception"));
 		return std::nullopt;
 	}
 }

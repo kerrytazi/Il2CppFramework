@@ -65,6 +65,11 @@ public:
 			file_.flush();
 	}
 
+	void Flush()
+	{
+		file_.flush();
+	}
+
 private:
 
 	std::ofstream file_;

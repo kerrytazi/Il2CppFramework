@@ -1,36 +1,39 @@
 #pragma once
 
-#include "System/Exception.hpp"
-
-#include "common/Log.hpp"
-
+#include <optional>
 #include <string_view>
 #include <type_traits>
+#include <stdexcept>
+
+#include "System/Exception.hpp"
+
+void _HandleTryException(std::string_view name, int ex);
+void _HandleTryException(std::string_view name, const std::exception& ex);
+void _HandleTryException(std::string_view name, const Il2CppExceptionWrapper& wrapper);
+void _HandleTryException(std::string_view name);
 
 template <typename TFunc, typename TRet = std::invoke_result_t<TFunc>>
 std::optional<TRet> TryGuarded(std::string_view name, TFunc&& func)
 {
 	try
 	{
-		func();
+		return func();
 	}
 	catch (int ex)
 	{
-		Log::Error(cs::Red(name), cs::Red(" catch int: "), cs::Red(ex));
+		_HandleTryException(name, ex);
 	}
 	catch (const std::exception& ex)
 	{
-		Log::Error(cs::Red(name), cs::Red(" catch std::exception: "), cs::Red(ex.what()));
+		_HandleTryException(name, ex);
 	}
-	catch (Il2CppExceptionWrapper& wrapper)
+	catch (const Il2CppExceptionWrapper& wrapper)
 	{
-		Log::Error(cs::Red(name), cs::Red(" catch Il2CppExceptionWrapper message: "), cs::Red(wrapper.ex->GetMessage()->AsU16StringView()));
-		Log::Error(cs::Red(name), cs::Red(" catch Il2CppExceptionWrapper source: "), cs::Red(wrapper.ex->GetSource()->AsU16StringView()));
-		Log::Error(cs::Red(name), cs::Red(" catch Il2CppExceptionWrapper stack: "), cs::Red(wrapper.ex->GetStackTrace()->AsU16StringView()));
+		_HandleTryException(name, wrapper);
 	}
 	catch (...)
 	{
-		Log::Error(cs::Red(name), cs::Red(" Exception ?"));
+		_HandleTryException(name);
 	}
 
 	return std::nullopt;
