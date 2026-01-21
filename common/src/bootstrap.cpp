@@ -29,17 +29,24 @@ void _BootstrapCleanup()
 	_LoggerCleanup();
 }
 
-void _UnloadLibraryFromThread()
+[[noreturn]]
+static void _UnloadLibraryFromThread()
 {
 	assert(g_dll_instance);
 
 	Log::Debug("_UnloadLibraryFromThread");
 
-	// NOTE: _UnloadLibraryFromThread is supposed to be called from a new thread.
-	// Each new thread increments library ref count,
-	// so we need to call FreeLibrary one more time.
-	FreeLibrary(g_dll_instance);
 	FreeLibraryAndExitThread(g_dll_instance, 0);
+}
+
+void _StartUnloadLibrary()
+{
+	Log::Debug("_UnloadLibraryFromThread");
+
+	CreateThread(nullptr, 0, [](void* param) -> DWORD {
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		_UnloadLibraryFromThread();
+	}, nullptr, 0, 0);
 }
 
 static std::string g_exe_path;

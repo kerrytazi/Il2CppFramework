@@ -287,7 +287,7 @@ void ModuleManager::UnloadImGui()
 
 extern void _Il2CppDisableUpdate();
 extern void _BootstrapCleanup();
-extern void _UnloadLibraryFromThread();
+extern void _StartUnloadLibrary();
 
 void _ModuleManagerCleanup()
 {
@@ -336,10 +336,7 @@ void ModuleManager::OnPostUpdate()
 #endif // UC_ENABLE_IMGUI
 
 #if defined(UC_DLL_INJECTOR)
-		std::thread([]() {
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
-			_UnloadLibraryFromThread();
-		}).detach();
+		_StartUnloadLibrary();
 #elif defined(UC_MANUAL_MAPPER)
 		_BootstrapCleanup();
 #else
