@@ -70,6 +70,15 @@ public:
 		full_.Add(std::string_view(cache_line_.data(), cache_line_.size()));
 	}
 
+	virtual void Flush() override
+	{
+		debug_.Flush();
+		info_.Flush();
+		warn_.Flush();
+		error_.Flush();
+		full_.Flush();
+	}
+
 private:
 
 	Level min_level_ = Logger::Level::Debug;
