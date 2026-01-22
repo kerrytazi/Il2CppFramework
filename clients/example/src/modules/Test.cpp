@@ -32,7 +32,7 @@ private:
 	il2cpp::gc_ref<System::String> mystr_;
 	void TestCreateGCRef()
 	{
-		mystr_ = il2cpp::gc_ref(System::String::New("hello world"));
+		mystr_ = il2cpp::gc_ref(u"hello world"_il2);
 		auto str2 = mystr_;
 
 		il2cpp::gc_ref<System::Object> test = il2cpp::gc_ref(System::String::New("hello world"));

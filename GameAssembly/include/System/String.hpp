@@ -44,3 +44,13 @@ private:
 };
 
 } // namespace System
+
+inline System::String* operator""_il2(const char* str, size_t size)
+{
+	return System::String::New({ str, size });
+}
+
+inline System::String* operator""_il2(const char16_t* str, size_t size)
+{
+	return System::String::New({ str, size });
+}
