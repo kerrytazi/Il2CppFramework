@@ -14,7 +14,6 @@ int _FilterSEHException(std::string_view name, unsigned long code, struct _EXCEP
 
 	Log::Error(cs::Red(name), cs::Red(" SEH exception"));
 
-	// FIXME: never returns frames
 	if (StackTracer::LogStackTrace(pointers) == 0)
 		StackTracer::LogStackTrace();
 

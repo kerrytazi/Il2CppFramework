@@ -93,6 +93,14 @@ static std::vector<StackFrame> WalkStack(HANDLE process, HANDLE thread, const CO
 	#error Unsupported architecture
 #endif
 
+	// StackWalk64 Can't traverse call stack if last call jumped on null.
+	// Manually traversing one step back to the place where null was called.
+	if (stack_frame.AddrPC.Offset == 0)
+	{
+		stack_frame.AddrPC.Offset = *(DWORD64*)stack_frame.AddrStack.Offset;
+		stack_frame.AddrStack.Offset -= 8;
+	}
+
 	for (int frame_num = 0; frame_num < 128; frame_num++)
 	{
 		if (!StackWalk64(
@@ -289,7 +297,8 @@ int StackTracer::LogStackTrace(_EXCEPTION_POINTERS* pointers)
 
 	if (g_symbols_initializer.InitSymbols(process))
 	{
-		auto frames = WalkStack(process, thread, pointers->ContextRecord);
+		CONTEXT context = *pointers->ContextRecord;
+		auto frames = WalkStack(process, thread, &context);
 
 		if (frames.empty())
 		{
