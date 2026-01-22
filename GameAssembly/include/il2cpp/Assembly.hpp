@@ -10,7 +10,7 @@ namespace il2cpp
 
 class Image;
 
-class Assembly : NoImplement
+class Assembly : _NoImplement
 {
 public:
 

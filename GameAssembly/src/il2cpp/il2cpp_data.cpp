@@ -35,6 +35,7 @@ void MyIl2CppData::Init()
 	init_func(il2cpp_resolve_icall);
 	init_func(il2cpp_type_get_name);
 	init_func(il2cpp_free);
+	init_func(il2cpp_object_new);
 	init_func(il2cpp_string_new);
 	init_func(il2cpp_string_new_utf16);
 

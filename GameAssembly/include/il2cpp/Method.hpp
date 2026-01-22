@@ -14,7 +14,7 @@ namespace il2cpp
 class Class;
 class Type;
 
-class Method : NoImplement
+class Method : _NoImplement
 {
 public:
 

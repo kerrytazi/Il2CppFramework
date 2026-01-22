@@ -8,7 +8,10 @@ namespace System { class Object; }
 namespace il2cpp
 {
 
+class Class;
+
 void* resolve_icall(const char* name);
+System::Object* object_new(const il2cpp::Class* klass);
 System::String* string_new(const char* str, int32_t len);
 System::String* string_new_utf16(const char16_t* str, int32_t len);
 

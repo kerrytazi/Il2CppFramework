@@ -16,7 +16,7 @@ class Field;
 class Property;
 class Event;
 
-class Class : NoImplement
+class Class : _NoImplement
 {
 public:
 

@@ -72,6 +72,12 @@ void* il2cpp::resolve_icall(const char* name)
 	return result;
 }
 
+System::Object* il2cpp::object_new(const Class* klass)
+{
+	assert(g_il2cpp_data.il2cpp_object_new);
+	return g_il2cpp_data.il2cpp_object_new(klass);
+}
+
 uint32_t il2cpp::gchandle_new(System::Object* obj, bool pinned)
 {
 	assert(g_il2cpp_data.il2cpp_gchandle_new);

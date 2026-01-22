@@ -13,7 +13,7 @@ class Type;
 class Class;
 class MethodInfo;
 
-class Event : NoImplement
+class Event : _NoImplement
 {
 public:
 

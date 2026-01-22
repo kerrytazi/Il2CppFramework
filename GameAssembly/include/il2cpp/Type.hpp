@@ -7,7 +7,7 @@
 namespace il2cpp
 {
 
-class Type : NoImplement
+class Type : _NoImplement
 {
 public:
 

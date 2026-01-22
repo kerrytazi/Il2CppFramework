@@ -10,7 +10,7 @@ namespace il2cpp
 class Class;
 class Method;
 
-class Property : NoImplement
+class Property : _NoImplement
 {
 public:
 

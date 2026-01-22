@@ -1,11 +1,11 @@
 #pragma once
 
-struct NoImplement
+struct _NoImplement
 {
-	NoImplement() = delete;
-	//~NoImplement() = delete;
-	NoImplement(const NoImplement&) = delete;
-	NoImplement(NoImplement&&) = delete;
-	NoImplement& operator=(const NoImplement&) = delete;
-	NoImplement& operator=(NoImplement&&) = delete;
+	_NoImplement() = delete;
+	//~_NoImplement() = delete;
+	_NoImplement(const _NoImplement&) = delete;
+	_NoImplement(_NoImplement&&) = delete;
+	_NoImplement& operator=(const _NoImplement&) = delete;
+	_NoImplement& operator=(_NoImplement&&) = delete;
 };

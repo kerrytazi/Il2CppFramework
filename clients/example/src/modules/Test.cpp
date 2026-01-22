@@ -9,6 +9,8 @@
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/Component.hpp"
 #include "System/String.hpp"
+#include "System/Threading/ThreadPool.hpp"
+#include "System/Threading/WaitCallback.hpp"
 #include "il2cpp/il2cpp.hpp"
 #include "il2cpp/Class.hpp"
 #include "il2cpp/Method.hpp"
@@ -28,6 +30,14 @@ public:
 	}
 
 private:
+
+	void TestThreadPool()
+	{
+		Log::Debug("TestModule MainThreadID: ", GetCurrentThreadId());
+		System::Threading::ThreadPool::QueueUserWorkItem(System::Threading::WaitCallback::New([]() {
+			Log::Debug("TestModule WorkerThreadID: ", GetCurrentThreadId());
+		}));
+	}
 
 	il2cpp::gc_ref<System::String> mystr_;
 	void TestCreateGCRef()

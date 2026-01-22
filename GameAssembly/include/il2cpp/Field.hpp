@@ -12,7 +12,7 @@ namespace il2cpp
 class Class;
 class Type;
 
-class Field : NoImplement
+class Field : _NoImplement
 {
 public:
 

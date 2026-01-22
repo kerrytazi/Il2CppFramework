@@ -388,6 +388,14 @@ static std::string normalize_type(std::string type, bool add_array = true)
 	return replaced_array;
 }
 
+static std::string normalize_method(std::string method)
+{
+	auto m1 = replaceAll(std::move(method), "_ctor", ".ctor");
+	auto m2 = replaceAll(std::move(m1), "_cctor", ".cctor");
+
+	return m2;
+}
+
 int main(int argc, char* argv[])
 {
 	// Check command line arguments
@@ -502,8 +510,7 @@ int main(int argc, char* argv[])
 			output_file << "\t{\n";
 			output_file << "\t\tauto klass = CallCached<decltype([]() { ";
 			output_file << "return il2cpp::Class::Find(\"" << normalize_type(class_gen.first) << "\", \"" << class_gen.second << "\");";
-			output_file << " })>();\n";
-			output_file << "\t\tassert(klass);\n";
+			output_file << " })>(); assert(klass);\n";
 			output_file << "\t\treturn klass;\n";
 			output_file << "\t}\n";
 			output_file << "};\n\n";
@@ -562,10 +569,9 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			output_file << "\t\tauto klass = il2cpp::FindClassOnce<" << method.namespaze << "::" << method.klass << ">::Find();\n";
-			output_file << "\t\tassert(klass);\n";
+			output_file << "\t\tauto klass = il2cpp::FindClassOnce<" << method.namespaze << "::" << method.klass << ">::Find(); assert(klass);\n";
 			output_file << "\t\tauto method = klass->FindMethod(";
-			output_file << "\"" << method.name << "\", ";
+			output_file << "\"" << normalize_method(std::string(method.name)) << "\", ";
 			output_file << "\"" << normalize_type(std::string(method.ret_type)) << "\", ";
 
 			output_file << "{ ";
@@ -582,8 +588,7 @@ int main(int argc, char* argv[])
 
 			output_file << "" << (method.is_static ? "true" : "false");
 
-			output_file << ");\n";
-			output_file << "\t\tassert(method);\n";
+			output_file << "); assert(method);\n";
 			output_file << "\t\tauto method_ptr = method->template GetMethodPointer<";
 
 			{
@@ -608,8 +613,7 @@ int main(int argc, char* argv[])
 				output_file << ")";
 			}
 
-			output_file << ">();\n";
-			output_file << "\t\tassert(method_ptr);\n";
+			output_file << ">(); assert(method_ptr);\n";
 			output_file << "\t\treturn method_ptr;\n";
 		}
 

@@ -48,6 +48,7 @@ struct MyIl2CppData
 	void* (*il2cpp_resolve_icall)(const char* name);
 	char* (*il2cpp_type_get_name)(const il2cpp::Type* type);
 	void (*il2cpp_free)(void* ptr);
+	System::Object* (*il2cpp_object_new)(const il2cpp::Class* klass);
 	System::String* (*il2cpp_string_new)(const char* str, int32_t len);
 	System::String* (*il2cpp_string_new_utf16)(const char16_t* str, int32_t len);
 

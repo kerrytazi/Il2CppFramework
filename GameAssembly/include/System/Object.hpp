@@ -8,10 +8,11 @@ namespace il2cpp { class Class; }
 namespace System
 {
 
-class Object : NoImplement
+class __autogen Object : _NoImplement
 {
 public:
 
+	Object();
 	const il2cpp::Class* GetClass() { return klass; }
 
 private:
