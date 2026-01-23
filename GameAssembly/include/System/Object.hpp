@@ -12,7 +12,6 @@ class __autogen Object : _NoImplement
 {
 public:
 
-	Object();
 	const il2cpp::Class* GetClass() { return klass; }
 
 private:

@@ -20,7 +20,7 @@ private:
 
 	void CheckInit()
 	{
-		if (!value_.has_value())
+		if (!value_.has_value()) [[unlikely]]
 			value_ = TFunc{}();
 	}
 

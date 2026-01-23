@@ -8,7 +8,7 @@
 namespace System
 {
 
-class String : public Object
+class __autogen String : public System::Object
 {
 public:
 

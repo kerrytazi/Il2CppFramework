@@ -1,11 +1,13 @@
 #pragma once
 
 #include "System/Object.hpp"
+#include "System/primitives.hpp"
 
 namespace System
 {
 
 class Type;
+class String;
 
 class __autogen DelegateData : public System::Object
 {

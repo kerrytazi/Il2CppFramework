@@ -8,7 +8,7 @@ namespace System
 
 class String;
 
-class Exception : Object
+class __autogen Exception : public System::Object
 {
 public:
 
