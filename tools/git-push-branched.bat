@@ -7,20 +7,6 @@ call :main
 exit /b %ERRORLEVEL%
 
 :main
-:: Get current branch name
-for /f "tokens=*" %%i in ('git branch --show-current 2^>nul') do set CURRENT_BRANCH=%%i
-
-:: Check if we're already on master
-if "%CURRENT_BRANCH%"=="master" (
-    echo Already on master branch. Skip stashing.
-    git pull --rebase origin master
-    if errorlevel 1 (
-        echo Error: Failed to pull from origin/master
-        set ERRORLEVEL=1
-        exit /b 1
-    )
-    goto :after_master_checkout
-)
 
 :: Not on master - stash, checkout, rebase, pop
 git stash push --include-untracked
@@ -51,8 +37,6 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:after_master_checkout
-
 set /p BRANCH_NAME="Enter branch name: "
 if "%BRANCH_NAME%"=="" (
     echo Error: Branch name cannot be empty
@@ -75,7 +59,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-git add .
+git add --all
 if errorlevel 1 (
     echo Error: Failed to add files
     set ERRORLEVEL=1
