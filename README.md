@@ -99,6 +99,8 @@ See [CMake settings](#cmake-settings) for more information.
 - *(Optional)* Remove `libs/imgui/examples` due to [this bug](https://developercommunity.visualstudio.com/t/Visual-Studio-scans-for-sln-files-when/11026224).
 - *(Optional)* Remove `libs/json/tools/` because Visual Studio searches for invalid `.natvis` files inside it.
 
+**NOTE**: When you add/remove files from your project/framework you need to regenerate cmake. You can do it by clicking Project -> Delete Cache and Reconfigure.
+
 # CMake settings
 You can pass additional options to cmake during configuration.
 
@@ -110,6 +112,7 @@ You can pass additional options to cmake during configuration.
 |-|-|-|
 |`UC_ENABLE_IMGUI`|Enable ImGui|`[ON]/OFF`|
 |`UC_LOADER`|Loader type|`[DLL_INJECTOR]/MANUAL_MAPPER`|
+
 
 
 
