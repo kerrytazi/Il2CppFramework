@@ -17,6 +17,7 @@ static HMODULE g_dll_instance = nullptr;
 extern void _Il2CppCleanCaches();
 extern void _ModuleManagerCleanup();
 extern void _LoggerCleanup();
+extern void _StackTracerCleanup();
 
 void _BootstrapCleanup()
 {
@@ -26,8 +27,12 @@ void _BootstrapCleanup()
 	g_module_manager = nullptr;
 	g_logger_manager = nullptr;
 
+	g_module_manager_storage.reset();
+	g_logger_manager_storage.reset();
+
 	_ModuleManagerCleanup();
 	_LoggerCleanup();
+	_StackTracerCleanup();
 }
 
 [[noreturn]]
