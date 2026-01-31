@@ -11,7 +11,8 @@ message(STATUS "UC_ENABLE_IMGUI ${UC_ENABLE_IMGUI}")
 set(UC_LOADER "DLL_INJECTOR" CACHE STRING "Loader type")
 message(STATUS "UC_LOADER ${UC_LOADER}")
 
-set(UC_STACK_TRACER "DBGHELP" CACHE STRING "Stack Tracer implementation")
+set(UC_STACK_TRACER "DIA" CACHE STRING "Stack Tracer implementation")
+#set(UC_STACK_TRACER "DBGHELP" CACHE STRING "Stack Tracer implementation")
 message(STATUS "UC_STACK_TRACER ${UC_STACK_TRACER}")
 
 #print_all_flags()
