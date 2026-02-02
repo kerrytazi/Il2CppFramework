@@ -1,4 +1,4 @@
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 #include "pch.hpp"
 
 #include "common/ModuleManager.hpp"
@@ -672,11 +672,11 @@ private:
 
 					ImGui::EndTable();
 
-#if UC_UNITY_VERSION_NUM >= 2022308945
+#if ICMF_UNITY_VERSION_NUM >= 2022308945
 					for (auto comp : obj->GetComponentsView())
 #else
 					for (auto comp : *obj->GetComponents())
-#endif // UC_UNITY_VERSION_NUM >= 2022308945
+#endif // ICMF_UNITY_VERSION_NUM >= 2022308945
 					{
 						if (ImGui::Button(comp->GetClass()->GetName().data()))
 						{
@@ -911,4 +911,4 @@ private:
 
 static RegisterModuleStatic<UnityExplorerModule> registered;
 
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI

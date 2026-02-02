@@ -9,8 +9,8 @@
 
 #include "il2cpp_data.hpp"
 
-#if !defined(UC_UNITY_VERSION_NUM)
-#error UC_UNITY_VERSION_NUM is not defined
+#if !defined(ICMF_UNITY_VERSION_NUM)
+#error ICMF_UNITY_VERSION_NUM is not defined
 #endif
 
 const il2cpp::Type* il2cpp::Class::GetType() const

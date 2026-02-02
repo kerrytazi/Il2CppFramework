@@ -99,7 +99,7 @@ void SimpleParser::Parse()
 			continue;
 		}
 
-		if (TryReadToken("#if UC_UNITY_VERSION_NUM "))
+		if (TryReadToken("#if ICMF_UNITY_VERSION_NUM "))
 		{
 			bool lt = false;
 			bool gt = false;
@@ -111,7 +111,7 @@ void SimpleParser::Parse()
 				gt = true;
 
 			if (!lt && !gt)
-				throw std::runtime_error("Invalid #if UC_UNITY_VERSION_NUM");
+				throw std::runtime_error("Invalid #if ICMF_UNITY_VERSION_NUM");
 
 			auto version_str = TryReadName();
 			auto version = std::stoull(std::string(version_str));

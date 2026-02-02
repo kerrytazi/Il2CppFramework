@@ -1,5 +1,7 @@
-include("${CMAKE_CURRENT_LIST_DIR}/config_mini.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/config_flags.cmake")
+include("${ICMF_SOURCE_DIR}/cmake/config_mini.cmake")
+include("${ICMF_SOURCE_DIR}/cmake/config_flags.cmake")
+include("${ICMF_SOURCE_DIR}/cmake/create_source_filters.cmake")
+
 cmake_policy(SET CMP0079 NEW)
 
 function(add_autogen project_target)
@@ -34,7 +36,7 @@ function(add_autogen project_target)
 
 		add_custom_command(
 			OUTPUT ${cpp_file}
-			COMMAND autogen ${UC_UNITY_VERSION_NUM} "${header}" "${cpp_file}"
+			COMMAND autogen ${ICMF_UNITY_VERSION_NUM} "${header}" "${cpp_file}"
 			DEPENDS autogen ${header}
 			COMMENT "autogen ${cpp_file} from ${header}"
 			VERBATIM
@@ -42,6 +44,7 @@ function(add_autogen project_target)
 	endforeach()
 
 	config_mini(${project_target}_autogen STATIC "${generated_files}" ${CMAKE_SOURCE_DIR})
+	create_source_filters(${project_target}_autogen "${project_binary_dir}/autogen")
 
 	target_link_libraries(${project_target} ${project_target}_autogen)
 endfunction()

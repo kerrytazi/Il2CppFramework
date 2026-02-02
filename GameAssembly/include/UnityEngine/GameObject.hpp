@@ -21,10 +21,10 @@ class __autogen GameObject : public UnityEngine::Object
 {
 public:
 
-#if UC_UNITY_VERSION_NUM >= 2022308945
+#if ICMF_UNITY_VERSION_NUM >= 2022308945
 	__autogen System::Int32 GetComponentCount();
 	__autogen UnityEngine::Component* GetComponentAtIndex(System::Int32 index);
-#endif // UC_UNITY_VERSION_NUM >= 2022308945
+#endif // ICMF_UNITY_VERSION_NUM >= 2022308945
 
 	__autogen System::Void SetActive(System::Boolean value);
 	__autogen System::Boolean get_activeSelf();
@@ -54,7 +54,7 @@ public:
 		return method_ptr(this);
 	}
 
-#if UC_UNITY_VERSION_NUM >= 2022308945
+#if ICMF_UNITY_VERSION_NUM >= 2022308945
 	template <typename T = void>
 	auto GetComponentsView()
 	{
@@ -66,7 +66,7 @@ public:
 			std::views::iota(System::Int32(0), GetComponentCount()) |
 			std::views::transform(get_component);
 	}
-#endif // UC_UNITY_VERSION_NUM >= 2022308945
+#endif // ICMF_UNITY_VERSION_NUM >= 2022308945
 };
 
 } // namespace UnityEngine

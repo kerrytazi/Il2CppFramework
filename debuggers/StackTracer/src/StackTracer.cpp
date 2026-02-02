@@ -10,8 +10,8 @@
 #include <optional>
 #include <mutex>
 
-#define UC_STACK_TRACER_DBGHELP 1
-#undef UC_STACK_TRACER_DIA
+#define ICMF_STACK_TRACER_DBGHELP 1
+#undef ICMF_STACK_TRACER_DIA
 
 struct StackFrame
 {
@@ -56,13 +56,13 @@ static STACKFRAME64 InitStackFrame(const CONTEXT* context)
 	return stack_frame;
 }
 
-#if defined(UC_STACK_TRACER_DIA)
+#if defined(ICMF_STACK_TRACER_DIA)
 #include <dia2.h>
 #pragma comment(lib, "diaguids.lib")
 //#pragma comment(lib, "msdia140.lib")
-#endif // defined(UC_STACK_TRACER_DIA)
+#endif // defined(ICMF_STACK_TRACER_DIA)
 
-#if defined(UC_STACK_TRACER_DBGHELP)
+#if defined(ICMF_STACK_TRACER_DBGHELP)
 #include <dbghelp.h>
 #pragma comment(lib, "dbghelp.lib")
 
@@ -133,17 +133,17 @@ private:
 	std::mutex mtx_;
 };
 
-#endif // defined(UC_STACK_TRACER_DBGHELP)
+#endif // defined(ICMF_STACK_TRACER_DBGHELP)
 
 static std::unique_ptr<IStackTraceParser> g_stack_tracer;
 static IStackTraceParser* GetStackTraceParser()
 {
 	if (!g_stack_tracer)
-#if defined(UC_STACK_TRACER_DIA)
+#if defined(ICMF_STACK_TRACER_DIA)
 		g_stack_tracer = std::make_unique<StackTraceParserDIA>();
-#elif defined(UC_STACK_TRACER_DBGHELP)
+#elif defined(ICMF_STACK_TRACER_DBGHELP)
 		g_stack_tracer = std::make_unique<StackTraceParserDbgHelp>();
-#elif defined(UC_STACK_TRACER_NONE)
+#elif defined(ICMF_STACK_TRACER_NONE)
 		g_stack_tracer = std::make_unique<StackTraceParserNone>();
 #endif
 

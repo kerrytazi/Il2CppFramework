@@ -34,7 +34,7 @@ void Module::LoadConfig(const nlohmann::json& doc)
 {
 }
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 bool Module::IsForceImGui()
 {
 	return false;
@@ -47,4 +47,4 @@ void Module::OnImGuiMenu()
 void Module::OnPostImGuiMenu()
 {
 }
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI

@@ -1,32 +1,35 @@
 cmake_minimum_required(VERSION 3.13)
-project("GameAssembly_${UC_UNITY_VERSION}")
+project("GameAssembly")
 
-include("${CMAKE_CURRENT_LIST_DIR}/../cmake/config_common.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/../cmake/version_to_number.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/../cmake/add_optimized.cmake")
+include("${ICMF_SOURCE_DIR}/cmake/config_common.cmake")
+include("${ICMF_SOURCE_DIR}/cmake/add_optimized.cmake")
+include("${ICMF_SOURCE_DIR}/cmake/add_autogen.cmake")
 
-config_common(GameAssembly_${UC_UNITY_VERSION} STATIC)
-target_include_directories(GameAssembly_${UC_UNITY_VERSION} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src")
+config_common(GameAssembly STATIC)
+target_precompile_headers(GameAssembly PRIVATE src/pch.hpp)
+target_include_directories(GameAssembly PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src")
 
-add_autogen(GameAssembly_${UC_UNITY_VERSION})
+target_sources(GameAssembly PRIVATE "GameAssembly.natvis")
 
-add_optimized(GameAssembly_${UC_UNITY_VERSION}_optimized STATIC "${CMAKE_CURRENT_LIST_DIR}/optimized/update_patch.cpp")
-target_link_libraries(GameAssembly_${UC_UNITY_VERSION} GameAssembly_${UC_UNITY_VERSION}_optimized)
+add_autogen(GameAssembly)
+
+add_optimized(GameAssembly_optimized STATIC "${CMAKE_CURRENT_LIST_DIR}/optimized/update_patch.cpp")
+target_link_libraries(GameAssembly GameAssembly_optimized)
 
 target_compile_definitions(
-	GameAssembly_${UC_UNITY_VERSION}
-	PRIVATE UC_UNITY_VERSION=${UC_UNITY_VERSION}
-	PRIVATE UC_UNITY_VERSION_NUM=${UC_UNITY_VERSION_NUM}
+	GameAssembly
+	PRIVATE ICMF_UNITY_VERSION=${ICMF_UNITY_VERSION}
+	PRIVATE ICMF_UNITY_VERSION_NUM=${ICMF_UNITY_VERSION_NUM}
 )
 
 target_compile_definitions(
-	GameAssembly_${UC_UNITY_VERSION}_optimized
-	PRIVATE UC_UNITY_VERSION=${UC_UNITY_VERSION}
-	PRIVATE UC_UNITY_VERSION_NUM=${UC_UNITY_VERSION_NUM}
+	GameAssembly_optimized
+	PRIVATE ICMF_UNITY_VERSION=${ICMF_UNITY_VERSION}
+	PRIVATE ICMF_UNITY_VERSION_NUM=${ICMF_UNITY_VERSION_NUM}
 )
 
 target_compile_definitions(
-	GameAssembly_${UC_UNITY_VERSION}_autogen
-	PRIVATE UC_UNITY_VERSION=${UC_UNITY_VERSION}
-	PRIVATE UC_UNITY_VERSION_NUM=${UC_UNITY_VERSION_NUM}
+	GameAssembly_autogen
+	PRIVATE ICMF_UNITY_VERSION=${ICMF_UNITY_VERSION}
+	PRIVATE ICMF_UNITY_VERSION_NUM=${ICMF_UNITY_VERSION_NUM}
 )

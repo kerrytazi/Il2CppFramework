@@ -1,4 +1,4 @@
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 #include "pch.hpp"
 
 #include "common/ModuleManager.hpp"
@@ -43,4 +43,4 @@ private:
 
 static RegisterModuleStatic<ImGuiDemoModule> registered;
 
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI

@@ -2,8 +2,8 @@ function(set_common_flags target_name)
 	if(MSVC)
 		set(common_compile_flags /W3 /WX /utf-8 /permissive- /fp:fast /nologo /EHsc)
 
-		if(UC_ENABLE_IMGUI)
-			target_compile_definitions(${target_name} PRIVATE UC_ENABLE_IMGUI=1)
+		if(ICMF_ENABLE_IMGUI)
+			target_compile_definitions(${target_name} PRIVATE ICMF_ENABLE_IMGUI=1)
 		endif()
 
 		target_compile_options(${target_name} PRIVATE
@@ -81,5 +81,4 @@ function(print_all_flags)
 	message(STATUS "CMAKE_MODULE_LINKER_FLAGS_RELEASE ${CMAKE_MODULE_LINKER_FLAGS_RELEASE}")
 	message(STATUS "CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO ${CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO}")
 	message(STATUS "CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL ${CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL}")
-
 endfunction()

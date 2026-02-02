@@ -1,11 +1,11 @@
-#include "pch.hpp"
-
 #include "common/ModuleManager.hpp"
 #include "common/LoggerManager.hpp"
 
 #include "common/Log.hpp"
 
 #include "common/MyWindows.hpp"
+
+#include <filesystem>
 
 void _Il2CppLoad();
 
@@ -69,7 +69,7 @@ static void InitExePath()
 	g_exe_dir = std::filesystem::path(g_exe_path).parent_path().string();
 }
 
-BOOL APIENTRY Bootstrap(HMODULE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+BOOL APIENTRY DllMain(HMODULE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	switch (fdwReason)
 	{
@@ -84,6 +84,10 @@ BOOL APIENTRY Bootstrap(HMODULE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 			g_module_manager_storage = std::make_unique<ModuleManager>();
 			g_module_manager = g_module_manager_storage.get();
+
+#if defined(ICMF_ENABLE_IMGUI)
+			g_module_manager->RequestLoadImGui();
+#endif // defined(ICMF_ENABLE_IMGUI)
 
 			_Il2CppLoad();
 			break;

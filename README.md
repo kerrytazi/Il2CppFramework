@@ -25,7 +25,7 @@ Then, navigate to it: `cd clients/my-mod`
 
 Edit the `CMakeLists.txt`:
 - `project("my_mod")`
-- `set(UC_UNITY_VERSION 2021.3.56f2)`
+- `set(ICMF_UNITY_VERSION 2021.3.56f2)`
 - `config_client(my_mod)`
 
 Edit the `src/dllmain.cpp`:
@@ -105,11 +105,11 @@ See [CMake settings](#cmake-settings) for more information.
 You can pass additional options to cmake during configuration.
 
 ## Example:
-- `cmake -B build . -DUC_ENABLE_IMGUI=OFF -DUC_LOADER=MANUAL_MAPPER`
+- `cmake -B build . -DICMF_ENABLE_IMGUI=OFF -DICMF_LOADER=MANUAL_MAPPER`
 
 ## Full list of options
 |Name|Description|Possible values. [Default]|
 |-|-|-|
-|`UC_ENABLE_IMGUI`|Enable ImGui|`[ON]/OFF`|
-|`UC_LOADER`|Loader type|`[DLL_INJECTOR]/MANUAL_MAPPER`|
-|`UC_STACK_TRACER`|Stack Tracer implementation|`[DBGHELP]/DIA/NONE`|
+|`ICMF_ENABLE_IMGUI`|Enable ImGui|`[ON]/OFF`|
+|`ICMF_LOADER`|Loader type|`[DLL_INJECTOR]/MANUAL_MAPPER`|
+|`ICMF_STACK_TRACER`|Stack Tracer implementation|`[DBGHELP]/DIA/NONE`|

@@ -33,9 +33,9 @@ public:
 	bool IsUnloading() const;
 	bool IsUnloaded() const;
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 	void RequestLoadImGui();
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 private:
 
@@ -60,7 +60,7 @@ private:
 	void LoadConfig();
 	void SaveConfig();
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 	std::atomic<bool> request_use_imgui_ = false;
 	std::atomic<bool> use_imgui_ = false;
 
@@ -68,7 +68,7 @@ private:
 
 	void LoadImGui();
 	void UnloadImGui();
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 	friend struct FriendIl2CppOnUpdate;
 	void OnPreUpdate();

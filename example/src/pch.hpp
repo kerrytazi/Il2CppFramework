@@ -18,13 +18,13 @@
 #include <charconv>
 #include <bit>
 
+#include "common/MyWindows.hpp"
+
 #include "nlohmann/json.hpp"
 #include "simdutf.h"
 
-#include "common/MyWindows.hpp"
-
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 #include "imgui.h"
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 #include "static_lambda/detour_lambda.hpp"

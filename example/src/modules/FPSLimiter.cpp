@@ -39,7 +39,7 @@ public:
 		SimpleLoadConfig(doc, config_);
 	}
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 	virtual void OnImGuiMenu() override
 	{
 		if (ImGui::CollapsingHeader("FPS Limiter"))
@@ -48,7 +48,7 @@ public:
 			ImGui::InputInt("Unfocused FPS", &config_.limited_fps);
 		}
 	}
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 private:
 

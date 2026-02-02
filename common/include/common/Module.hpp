@@ -32,7 +32,7 @@ public:
 	// Called when the framework wants to load user settings (usually after Load).
 	virtual void LoadConfig(const nlohmann::json& doc);
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 	// Return true if you want to render ImGui even if main menu is closed.
 	virtual bool IsForceImGui();
 
@@ -43,7 +43,7 @@ public:
 	// Called each frame. You can create other ImGui windows here.
 	// Or render custom onscreen primitives.
 	virtual void OnPostImGuiMenu();
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 	// Requires NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT
 	// and TConfig::mod_name to be declared for TConfig.

@@ -246,9 +246,9 @@ private:
 	const struct ___Il2CppMetadataGenericContainerHandle* genericContainerHandle;
 	uint32_t instance_size; // valid when size_inited is true
 
-#if UC_UNITY_VERSION_NUM >= 2022308945
+#if ICMF_UNITY_VERSION_NUM >= 2022308945
 	uint32_t stack_slot_size; // valid when size_inited is true
-#endif // UC_UNITY_VERSION_NUM >= 2022308945
+#endif // ICMF_UNITY_VERSION_NUM >= 2022308945
 
 	uint32_t actualSize;
 	uint32_t element_size;
@@ -272,9 +272,9 @@ private:
 	uint8_t genericRecursionDepth;
 	uint8_t rank;
 	uint8_t minimumAlignment; // Alignment of this type
-#if UC_UNITY_VERSION_NUM <= 2021322258
+#if ICMF_UNITY_VERSION_NUM <= 2021322258
 	uint8_t naturalAligment; // Alignment of this type without accounting for packing
-#endif // UC_UNITY_VERSION_NUM >= 2021322258
+#endif // ICMF_UNITY_VERSION_NUM >= 2021322258
 	uint8_t packingSize;
 
 	// this is critical for performance of Class::InitFromCodegen. Equals to initialized && !initializationExceptionGCHandle at all times.

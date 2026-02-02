@@ -8,10 +8,10 @@
 
 #include "common/StringUtils.hpp"
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 #include "ImGuiHook.hpp"
 #include "ImDrawDataCopy.hpp"
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 struct RegisteredModule
 {
@@ -84,13 +84,13 @@ bool ModuleManager::IsUnloaded() const
 	return load_state_ == ELoadState::Unloaded;
 }
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 void ModuleManager::RequestLoadImGui()
 {
 	assert(!use_imgui_);
 	request_use_imgui_ = true;
 }
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 void ModuleManager::Load()
 {
@@ -190,7 +190,7 @@ void ModuleManager::SaveConfig()
 	std::filesystem::rename(path_tmp, path);
 }
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 ImDrawDataCopy g_imgui_draw_data_renderer_copy;
 
 void ModuleManager::OnImGui()
@@ -298,7 +298,7 @@ void ModuleManager::UnloadImGui()
 	else
 		Log::Error("ModuleManager::UnloadImGui() failed");
 }
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 extern void _Il2CppDisableUpdate();
 extern void _BootstrapCleanup();
@@ -327,10 +327,10 @@ void ModuleManager::OnPreUpdate()
 	if (load_state_ == ELoadState::DoUnload)
 		return;
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 	if (bool check = true; request_use_imgui_.compare_exchange_strong(check, false))
 		LoadImGui();
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 
 	PreUpdate();
 	Update();
@@ -345,9 +345,9 @@ void ModuleManager::OnPostUpdate()
 
 		_Il2CppDisableUpdate();
 
-#if defined(UC_LOADER_DLL_INJECTOR)
+#if defined(ICMF_LOADER_DLL_INJECTOR)
 		_StartUnloadLibrary();
-#elif defined(UC_LOADER_MANUAL_MAPPER)
+#elif defined(ICMF_LOADER_MANUAL_MAPPER)
 		_BootstrapCleanup();
 #else
 #error Unknown Loader
@@ -358,7 +358,7 @@ void ModuleManager::OnPostUpdate()
 
 	PostUpdate();
 
-#ifdef UC_ENABLE_IMGUI
+#ifdef ICMF_ENABLE_IMGUI
 	OnImGui();
-#endif // UC_ENABLE_IMGUI
+#endif // ICMF_ENABLE_IMGUI
 }
