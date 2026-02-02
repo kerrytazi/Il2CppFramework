@@ -1,9 +1,11 @@
 #pragma once
 
+#include "common/autogen.hpp"
+
 namespace UnityEngine
 {
 
-enum class KeyCode
+enum class __autogen KeyCode
 {
 	None = 0,
 	Backspace = 8,

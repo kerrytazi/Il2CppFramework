@@ -1,9 +1,11 @@
 #pragma once
 
+#include "common/autogen.hpp"
+
 namespace UnityEngine
 {
 
-struct Vector3
+struct __autogen Vector3
 {
 	float x;
 	float y;

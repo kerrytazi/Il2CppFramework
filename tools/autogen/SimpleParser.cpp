@@ -73,6 +73,8 @@ void SimpleParser::Parse()
 	std::string_view method_ret_type;
 	std::string_view method_name;
 
+	SkipBom();
+
 	while (ptr_ != end_)
 	{
 		if (SkipComments())
@@ -422,7 +424,7 @@ std::string SimpleParser::TryReadTypeName()
 
 	while (ptr_ != end_)
 	{
-		if (VALID_NAMESPACE_TABLE[(size_t)*ptr_])
+		if (VALID_NAMESPACE_TABLE[(uint8_t)*ptr_])
 		{
 			result += *ptr_++;
 			continue;
@@ -469,7 +471,7 @@ std::string SimpleParser::TryReadTypeName()
 std::string_view SimpleParser::TryReadName()
 {
 	auto prev = ptr_;
-	while (ptr_ != end_ && VALID_NAME_TABLE[(size_t)*ptr_])
+	while (ptr_ != end_ && VALID_NAME_TABLE[(uint8_t)*ptr_])
 		++ptr_;
 
 	if (prev == ptr_)
@@ -481,7 +483,7 @@ std::string_view SimpleParser::TryReadName()
 std::string_view SimpleParser::TryReadNamespaceName()
 {
 	auto prev = ptr_;
-	while (ptr_ != end_ && VALID_NAMESPACE_TABLE[(size_t)*ptr_])
+	while (ptr_ != end_ && VALID_NAMESPACE_TABLE[(uint8_t)*ptr_])
 		++ptr_;
 
 	if (prev == ptr_)
@@ -501,19 +503,19 @@ bool SimpleParser::TryReadToken(std::string_view token)
 	if (std::string_view(ptr_, token.size()) != token)
 		return false;
 
-	if (VALID_NAME_TABLE[(size_t)token.back()] && SizeLeft() > (int)token.size())
+	if (VALID_NAME_TABLE[(uint8_t)token.back()] && SizeLeft() > (int)token.size())
 	{
 		// Simple lookahead for one symbol.
 		// To disallow searching for "class" in "className".
-		if (VALID_NAME_TABLE[(size_t)ptr_[token.size()]])
+		if (VALID_NAME_TABLE[(uint8_t)ptr_[token.size()]])
 			return false;
 	}
 
-	if (VALID_NAME_TABLE[(size_t)token[0]] && ptr_ != begin_)
+	if (VALID_NAME_TABLE[(uint8_t)token[0]] && ptr_ != begin_)
 	{
 		// Simple lookbehind for one symbol.
 		// To disallow searching for "class" in "generic_class".
-		if (VALID_NAME_TABLE[(size_t)ptr_[-1]])
+		if (VALID_NAME_TABLE[(uint8_t)ptr_[-1]])
 			return false;
 	}
 
@@ -525,13 +527,19 @@ bool SimpleParser::SkipWhitespaces(bool at_least_once /*= false*/)
 {
 	auto prev = ptr_;
 
-	while (ptr_ != end_ && WHITESPACE_TABLE[(size_t)*ptr_])
+	while (ptr_ != end_ && WHITESPACE_TABLE[(uint8_t)*ptr_])
 		++ptr_;
 
 	if (at_least_once && prev == ptr_)
 		throw std::runtime_error("Expected whitespace");
 
 	return prev != ptr_;
+}
+
+bool SimpleParser::SkipBom()
+{
+	// F*ck microsoft
+	return TryReadToken("\xef\xbb\xbf");
 }
 
 bool SimpleParser::SkipComments()
@@ -575,7 +583,7 @@ std::optional<SimpleParser::SimpleParser::BracketInfo*> SimpleParser::TryReadOpe
 	if (ptr_ >= end_)
 		return std::nullopt;
 
-	auto bracket_close = BRACKET_OPEN_TABLE[(size_t)*ptr_];
+	auto bracket_close = BRACKET_OPEN_TABLE[(uint8_t)*ptr_];
 
 	if (!bracket_close)
 		return std::nullopt;
@@ -590,7 +598,7 @@ std::optional<SimpleParser::SimpleParser::BracketInfo> SimpleParser::TryReadClos
 	if (ptr_ >= end_)
 		return std::nullopt;
 
-	auto bracket_open = BRACKET_CLOSE_TABLE[(size_t)*ptr_];
+	auto bracket_open = BRACKET_CLOSE_TABLE[(uint8_t)*ptr_];
 
 	if (!bracket_open)
 		return std::nullopt;

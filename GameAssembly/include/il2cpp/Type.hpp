@@ -2,6 +2,8 @@
 
 #include "common/NoImplement.hpp"
 
+#include "il2cpp/ClassFinder.hpp"
+
 #include <string>
 
 namespace System { class Type; }
@@ -20,6 +22,12 @@ public:
 	int SizeOfType() const; // 0 = void, -1 = unknown
 	System::Type* ToReflectionType() const;
 	const Class* ToClass() const;
+
+	template <typename TClass>
+	bool IsTypeClass() const
+	{
+		return ToClass() == il2cpp::Find<TClass>();
+	}
 
 private:
 

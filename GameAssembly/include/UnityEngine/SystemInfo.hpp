@@ -1,7 +1,5 @@
 #pragma once
 
-#include "common/autogen.hpp"
-#include "System/primitives.hpp"
 #include "System/Object.hpp"
 #include "UnityEngine/Rendering/GraphicsDeviceType.hpp"
 

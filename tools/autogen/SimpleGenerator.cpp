@@ -110,16 +110,7 @@ std::string SimpleGenerate(const ParsedResult& parsed)
 		all_types.erase("System.Single");
 		all_types.erase("System.Double");
 
-		ss << "#include \"System/primitives.hpp\"\n";
-		ss << "#include \"common/CallCached.hpp\"\n";
-		ss << "#include \"il2cpp/Class.hpp\"\n";
-		ss << "#include \"il2cpp/ClassFinder.hpp\"\n";
-		if (parsed.any_icall || parsed.any_new)
-			ss << "#include \"il2cpp/il2cpp.hpp\"\n";
-		if (parsed.any_method)
-			ss << "#include \"il2cpp/Method.hpp\"\n";
-		ss << "\n";
-		ss << "#include <cassert>\n\n";
+		ss << "#include \"common/autogen_pch.hpp\"\n";
 
 		for (const auto& type : all_types)
 			ss << "#include \"" << ReplaceAll(type, ".", "/") << ".hpp\"\n";

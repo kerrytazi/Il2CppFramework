@@ -2,6 +2,8 @@
 
 #include "common/NoImplement.hpp"
 
+#include "il2cpp/Type.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
@@ -10,7 +12,6 @@ namespace il2cpp
 {
 
 class Class;
-class Type;
 
 class Field : _NoImplement
 {
@@ -21,6 +22,13 @@ public:
 	size_t GetOffset() const { return offset; }
 	const Type* GetType() const { return type; }
 
+	template <typename TClass>
+	bool IsTypeClass() const
+	{
+		return GetType()->IsTypeClass<TClass>();
+	}
+
+	bool IsInstance() const { return !IsStatic(); }
 	bool IsStatic() const;
 	bool IsLiteral() const;
 	bool IsThreadLocal() const;

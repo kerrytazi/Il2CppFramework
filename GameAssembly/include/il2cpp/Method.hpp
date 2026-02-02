@@ -3,8 +3,12 @@
 #include "common/NoImplement.hpp"
 #include "common/Templates.hpp"
 
+#include "il2cpp/Type.hpp"
+#include "il2cpp/ClassFinder.hpp"
+
 #include <initializer_list>
 #include <string_view>
+#include <algorithm>
 #include <ranges>
 #include <optional>
 
@@ -14,7 +18,6 @@ namespace il2cpp
 {
 
 class Class;
-class Type;
 
 class Method : _NoImplement
 {
@@ -43,6 +46,19 @@ public:
 		return
 			std::views::iota(size_t(0), GetParametersCount()) |
 			std::views::transform(get_paramter_by_index);
+	}
+
+	auto GetParameterClassesView() const
+	{
+		return GetParameterTypesView()
+			| std::views::transform(&il2cpp::Type::ToClass);
+	}
+
+	template <typename... TClasses>
+	bool IsParameterClasses() const
+	{
+		auto expected_params = { il2cpp::Find<TClasses>()... };
+		return std::ranges::equal(expected_params, GetParameterClassesView());
 	}
 
 	void* _GetMethodPointer() const { return (void*)methodPointer; }

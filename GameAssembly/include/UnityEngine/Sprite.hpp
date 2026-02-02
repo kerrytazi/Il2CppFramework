@@ -1,14 +1,12 @@
 #pragma once
 
-#include "common/autogen.hpp"
+#include "System/Object.hpp"
 
 namespace UnityEngine
 {
 
-struct __autogen Vector2
+class __autogen Sprite : public System::Object
 {
-	float x;
-	float y;
 };
 
 } // namespace UnityEngine

@@ -5,6 +5,7 @@
 #include "il2cpp/Type.hpp"
 #include "il2cpp/Method.hpp"
 #include "il2cpp/Field.hpp"
+#include "il2cpp/ClassFinder.hpp"
 
 #include <string_view>
 #include <optional>

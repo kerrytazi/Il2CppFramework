@@ -46,6 +46,46 @@ public:
 		return *reinterpret_cast<T*>(reinterpret_cast<uint8_t*>(this) + field->GetOffset());
 	}
 
+	struct _GetFieldResult
+	{
+		const il2cpp::Field* field;
+		void* data;
+
+		template <typename T>
+		T& GetData() const
+		{
+			return *reinterpret_cast<T*>(data);
+		}
+
+		template <typename TClass>
+		bool IsTypeClass() const
+		{
+			return field->GetType()->IsTypeClass<TClass>();
+		}
+	};
+
+	auto GetFields()
+	{
+		auto read_field = [this](const il2cpp::Field& field) {
+			return _GetFieldResult{
+				.field = &field,
+				.data = reinterpret_cast<uint8_t*>(this) + field.GetOffset(),
+			};
+		};
+
+		return klass->GetFields()
+			| std::views::filter(&il2cpp::Field::IsInstance)
+			| std::views::transform(read_field);
+	}
+
+	template <typename TClass>
+	auto GetFields()
+	{
+		return GetFields()
+			| std::views::filter(&System::Object::_GetFieldResult::IsTypeClass<std::remove_pointer_t<TClass>>)
+			| std::views::transform(&System::Object::_GetFieldResult::GetData<TClass>);
+	}
+
 private:
 
 	const il2cpp::Class* klass;

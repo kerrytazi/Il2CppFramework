@@ -1,9 +1,11 @@
 #pragma once
 
+#include "common/autogen.hpp"
+
 namespace UnityEngine
 {
 
-enum class DepthTextureMode
+enum class __autogen DepthTextureMode
 {
 	None = 0,
 	Depth = 1,

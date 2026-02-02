@@ -38,20 +38,16 @@ public:
 
 	__autogen static UnityEngine::GameObject* Find(System::String* name);
 
+	__autogen il2cpp::Array<UnityEngine::Component*>* GetComponents(System::Type* type);
+
 	// TODO: Benchmark against GetComponentsView
 	il2cpp::Array<UnityEngine::Component*>* GetComponents()
 	{
-		auto gmethod = CallCached<decltype([]() {
-			auto klass = il2cpp::Find<GameObject>();
-			auto type_args = il2cpp::Array<System::Type*>::New({ il2cpp::Find<System::Object>()->GetType()->ToReflectionType() });
-			auto method = klass->FindMethod("GetComponents", 0);
-			assert(method);
-			auto gmethod = method->ToReflectionMethod()->MakeGenericMethod(type_args)->ToIl2CppMethod();
-			return gmethod;
+		auto comp_ref_type = CallCached<decltype([]() {
+			return il2cpp::Find<UnityEngine::Component>()->GetType()->ToReflectionType();
 		})>();
-		auto method_ptr = gmethod->GetMethodPointer<il2cpp::Array<UnityEngine::Component*>*(GameObject*)>();
-		assert(method_ptr);
-		return method_ptr(this);
+
+		return GetComponents(comp_ref_type);
 	}
 
 #if ICMF_UNITY_VERSION_NUM >= 2022308945

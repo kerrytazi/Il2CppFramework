@@ -1,10 +1,12 @@
 #pragma once
 
+#include "common/autogen.hpp"
+
 namespace UnityEngine
 {
 
 // [Flags]
-enum class CameraClearFlags
+enum class __autogen CameraClearFlags
 {
 	Skybox = 1,
 	Color = 2,

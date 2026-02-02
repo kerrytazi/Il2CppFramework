@@ -47,4 +47,7 @@ function(add_autogen project_target)
 	create_source_filters(${project_target}_autogen "${project_binary_dir}/autogen")
 
 	target_link_libraries(${project_target} ${project_target}_autogen)
+
+	target_sources(${project_target}_autogen PRIVATE "${ICMF_SOURCE_DIR}/common/include/common/autogen_pch.hpp")
+	target_precompile_headers(${project_target}_autogen PRIVATE "${ICMF_SOURCE_DIR}/common/include/common/autogen_pch.hpp")
 endfunction()

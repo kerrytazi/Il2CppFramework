@@ -1,9 +1,11 @@
 #pragma once
 
+#include "common/autogen.hpp"
+
 namespace UnityEngine
 {
 
-enum class StereoTargetEyeMask
+enum class __autogen StereoTargetEyeMask
 {
 	None = 0,
 	Left = 1,

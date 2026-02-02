@@ -14,7 +14,7 @@ target_precompile_headers(example_mod PRIVATE src/pch.hpp)
 target_include_directories(example_mod PRIVATE "src")
 
 # Set our mod as startup project.
-# So we can simply Ctrl+B to build it
+# So we can simply Ctrl+Shift+B to build it
 set_property(DIRECTORY "${CMAKE_CURRENT_LIST_DIR}" PROPERTY VS_STARTUP_PROJECT example_mod)
 
 set_target_properties(example_mod PROPERTIES
@@ -22,3 +22,7 @@ set_target_properties(example_mod PROPERTIES
 	VS_DEBUGGER_COMMAND_ARGUMENTS "--target-name VRChat.exe --dll-name $<TARGET_FILE:example_mod>"
 	VS_DEBUGGER_ATTACH "false"
 )
+
+# Uncomment if you want automatic unity type generation for game classes/structs
+#add_autogen(example_mod)
+#target_include_directories(example_mod_autogen PRIVATE "src")

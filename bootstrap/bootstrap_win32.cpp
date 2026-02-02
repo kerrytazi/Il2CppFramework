@@ -81,6 +81,7 @@ BOOL APIENTRY DllMain(HMODULE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 			g_logger_manager = g_logger_manager_storage.get();
 
 			Log::Debug("Bootstrap DLL_PROCESS_ATTACH ", hinstDLL);
+			Log::Debug("build " __DATE__ " " __TIME__);
 
 			g_module_manager_storage = std::make_unique<ModuleManager>();
 			g_module_manager = g_module_manager_storage.get();

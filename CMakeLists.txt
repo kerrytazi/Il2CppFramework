@@ -37,6 +37,21 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 add_library(Il2CppModFramework INTERFACE)
 set_property(TARGET Il2CppModFramework PROPERTY FOLDER "Il2CppModFramework")
 
+add_library(cmake INTERFACE
+	CMakeLists.txt
+	cmake/add_autogen.cmake
+	cmake/add_optimized.cmake
+	cmake/config_common.cmake
+	cmake/config_flags.cmake
+	cmake/config_mini.cmake
+	cmake/config_mod.cmake
+	cmake/create_source_filters.cmake
+	cmake/find_dia_sdk.cmake
+	cmake/version_to_number.cmake
+)
+add_dependencies(Il2CppModFramework cmake)
+set_property(TARGET cmake PROPERTY FOLDER "Il2CppModFramework")
+
 if(ICMF_LOADER STREQUAL "DLL_INJECTOR")
 	add_subdirectory("${ICMF_SOURCE_DIR}/loaders/dll_injector" "loaders/dll_injector" EXCLUDE_FROM_ALL)
 	add_dependencies(Il2CppModFramework dll_injector)

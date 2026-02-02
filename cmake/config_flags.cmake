@@ -8,18 +8,18 @@ function(set_common_flags target_name)
 
 		target_compile_options(${target_name} PRIVATE
 			$<$<CONFIG:Debug>:${common_compile_flags} /MDd /GR /Zi /Ob0 /Od /RTC1 /D_ITERATOR_DEBUG_LEVEL=2>
-			$<$<CONFIG:Release>:${common_compile_flags} /MD /O2 /Ob2 /DNDEBUG>
+			$<$<CONFIG:Release>:${common_compile_flags} /MD /O2 /Ob2 /DNDEBUG /GL>
 			$<$<CONFIG:RelWithDebInfo>:${common_compile_flags} /MD /Zi /O2 /Ob1 /DNDEBUG>
-			$<$<CONFIG:MinSizeRel>:${common_compile_flags} /MD /O1 /Ob1 /DNDEBUG>
+			$<$<CONFIG:MinSizeRel>:${common_compile_flags} /MD /O1 /Ob1 /DNDEBUG /GL>
 		)
 
 		set(common_link_flags /nologo)
 
 		target_link_options(${target_name} PRIVATE
 			$<$<CONFIG:Debug>:${common_link_flags} /debug /INCREMENTAL>
-			$<$<CONFIG:Release>:${common_link_flags} /INCREMENTAL:NO>
+			$<$<CONFIG:Release>:${common_link_flags} /INCREMENTAL:NO /LTCG>
 			$<$<CONFIG:RelWithDebInfo>:${common_link_flags} /debug /INCREMENTAL>
-			$<$<CONFIG:MinSizeRel>:${common_link_flags} /INCREMENTAL:NO>
+			$<$<CONFIG:MinSizeRel>:${common_link_flags} /INCREMENTAL:NO /LTCG>
 		)
 	else()
 		message(FATAL_ERROR "set_common_flags compiler not supproted")

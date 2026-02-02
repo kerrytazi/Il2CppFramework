@@ -1,9 +1,11 @@
 #pragma once
 
+#include "common/autogen.hpp"
+
 namespace UnityEngine
 {
 
-enum class TransparencySortMode
+enum class __autogen TransparencySortMode
 {
 	Default = 0,
 	Perspective = 1,

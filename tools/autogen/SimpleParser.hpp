@@ -34,6 +34,7 @@ private:
 	[[nodiscard]]
 	bool SkipWhitespaces(bool at_least_once = false);
 
+	bool SkipBom();
 	bool SkipComments();
 
 	struct BracketInfo
