@@ -51,7 +51,7 @@ extern "C" const char* GetImGuiLogFilename()
 
 // Optional. You can remove this function.
 // Will fallback to DefaultGetImGuiSwitchClientMenuKey.
-int GetImGuiSwitchClientMenuKey()
+extern "C" int GetImGuiSwitchClientMenuKey()
 {
 	return VK_INSERT;
 }
