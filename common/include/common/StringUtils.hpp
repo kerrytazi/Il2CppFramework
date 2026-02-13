@@ -290,7 +290,7 @@ inline auto SplitView(const std::basic_string_view<TChar>& input, const std::bas
 template <typename TChar>
 inline std::vector<std::basic_string<TChar>> Split(const std::basic_string_view<TChar>& input, const std::basic_string_view<TChar>& delimiter)
 {
-	auto view = SplitView(input, delimiter);
+	auto view = SplitView(input, delimiter) | std::views::transform([](const auto& s) { return std::basic_string<TChar>(s); });
 	return std::vector(view.begin(), view.end());
 }
 
