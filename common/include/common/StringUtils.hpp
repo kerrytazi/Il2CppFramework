@@ -230,7 +230,7 @@ inline size_t _impl_u16(char16_t* out, size_t out_size, const std::string_view& 
 
 inline size_t _impl_u16(char16_t* out, size_t out_size, const std::string& str, int base)
 {
-	return _impl_u16(out, out_size, str, base);
+	return _impl_u16(out, out_size, std::string_view(str), base);
 }
 
 inline size_t _impl_u16(char16_t* out, size_t out_size, const char* str, int base)
@@ -339,10 +339,8 @@ private:
 	{
 		if (!p || p[0] == '\0')
 		{
-#ifndef NDEBUG
-			char_size = 1;
+			char_size = 0;
 			unicode_val = 0;
-#endif // !NDEBUG
 			return;
 		}
 

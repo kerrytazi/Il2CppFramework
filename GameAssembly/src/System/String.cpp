@@ -29,7 +29,7 @@ void System::String::AsString(std::string& cache) const
 	}
 
 	auto u16_str = AsU16StringView();
-	cache.resize(u16_str.size() * 2 + 1); // allocate more
+	cache.resize(u16_str.size() * 4 + 1); // allocate more
 	auto result_size = su::u8(cache.data(), cache.capacity(), u16_str);
 
 	assert(result_size >= u16_str.size());
