@@ -1,0 +1,6 @@
+[submodule "libs/DetourLambda"]
+	path = libs/DetourLambda
+	url = https://github.com/kerrytazi/DetourLambda
+[submodule "libs/Il2CppRuntimeDumper"]
+	path = libs/Il2CppRuntimeDumper
+	url = https://github.com/kerrytazi/Il2CppRuntimeDumper.git
