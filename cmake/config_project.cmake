@@ -1,5 +1,6 @@
 function(config_project target_name)
 	target_compile_features(${target_name} PRIVATE cxx_std_23)
+	set_target_properties(${target_name} PROPERTIES CXX_SCAN_FOR_MODULES OFF)
 
 	if(MSVC)
 		target_compile_options(${target_name}
